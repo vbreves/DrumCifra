@@ -1,0 +1,1563 @@
+{
+  "songs": [
+    {
+      "id": "mqh38uv5ofjd0g",
+      "title": "Grande é o Senhor",
+      "artist": "Eli Soares",
+      "bpm": 0,
+      "sections": [
+        {
+          "id": "mqh39agmj7vx0h",
+          "name": "Intro",
+          "tags": [
+            "GROOVE VERSO"
+          ],
+          "lines": [
+            {
+              "id": "mqh39lf0spuy2w",
+              "lyrics": "",
+              "tags": [
+                {
+                  "id": "mqh3turmg2d79f",
+                  "name": "GROOVE VERSO",
+                  "position": 0
+                }
+              ]
+            }
+          ],
+          "_showLines": true
+        },
+        {
+          "id": "mqh39ojwcxi8sf",
+          "name": "Verso 1",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh39agmwba517",
+              "lyrics": "Grande é o Senhor e mui digno de louvor",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm8dfdhe",
+              "lyrics": "Na cidade do nosso Deus",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm6tirbj",
+              "lyrics": "Seu Santo monte",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm83hm4f",
+              "lyrics": "Alegria de toda terra",
+              "tags": []
+            }
+          ],
+          "_showLines": true
+        },
+        {
+          "id": "mqh39tpejykvd3",
+          "name": "Verso 2",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh39agm77ecsv",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmltyqn9",
+              "lyrics": "Grande é o Senhor em quem nós temos a vitória",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmykipad",
+              "lyrics": "E que nos ajuda contra o inimigo",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm9f7aml",
+              "lyrics": "Por isso diante dele nos prostramos",
+              "tags": []
+            }
+          ],
+          "_showLines": true
+        },
+        {
+          "id": "mqh3a3j95x37nr",
+          "name": "Refrão",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh39agmgtjp6g",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmrmxx0t",
+              "lyrics": "Queremos o Teu nome engrandecer",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm9jcch9",
+              "lyrics": "E agradecer-Te por tua obra em nossas vidas",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmlzv9s3",
+              "lyrics": "Confiamos em Teu infinito amor",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmv8uvqk",
+              "lyrics": "Pois só Tu és o Deus eterno",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm72c4c0",
+              "lyrics": "Sobre toda terra e céus",
+              "tags": []
+            }
+          ],
+          "_showLines": true
+        },
+        {
+          "id": "mqh3adlk3tey5v",
+          "name": "Verso 2",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh39agmcfmxbi",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmij5ybt",
+              "lyrics": "Grande é o Senhor em quem nós temos a vitória",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm7a8ox3",
+              "lyrics": "E que nos ajuda contra o inimigo",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm6xqd50",
+              "lyrics": "Por isso diante dele nos prostramos",
+              "tags": []
+            }
+          ],
+          "_showLines": true
+        },
+        {
+          "id": "mqh3as048ld8da",
+          "name": "Refrão 1",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh39agm0uyjpx",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmnbhsoa",
+              "lyrics": "Queremos o Teu nome engrandecer",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm38syml",
+              "lyrics": "E agradecer-Te por tua obra em nossas vidas",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmpyetc3",
+              "lyrics": "Confiamos em Teu infinito amor",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmdqh44z",
+              "lyrics": "Pois só Tu és o Deus eterno",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmd4kpmp",
+              "lyrics": "Sobre toda terra",
+              "tags": []
+            }
+          ],
+          "_showLines": true
+        },
+        {
+          "id": "mqh3b3re0k0dkr",
+          "name": "Refrão 2",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh39agmmpwb0e",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmjt3cls",
+              "lyrics": "Queremos o Teu nome engrandecer",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmtdi9zh",
+              "lyrics": "E agradecer-Te por tua obra em nossas vidas",
+              "tags": []
+            },
+            {
+              "id": "mqh39agm5f8rla",
+              "lyrics": "Confiamos em Teu infinito amor",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmxbcylz",
+              "lyrics": "Pois só Tu és o Deus eterno",
+              "tags": []
+            },
+            {
+              "id": "mqh39agmojbjro",
+              "lyrics": "Sobre toda terra e céus",
+              "tags": []
+            }
+          ],
+          "_showLines": true
+        }
+      ],
+      "createdAt": 1781641327937,
+      "updatedAt": 1781642539295
+    },
+    {
+      "id": "mqh3h72u9lvyea",
+      "title": "Meu Prazer/ Não Há Deus Maior/ Maravilhoso/ Maior é Jesus (pot-pourri)",
+      "artist": "Morada",
+      "bpm": 0,
+      "sections": [
+        {
+          "id": "mqh3ha1kdtwlm2",
+          "name": "Intro",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh3ha1kg56vn0",
+              "lyrics": "Em Espírito",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k7392oo",
+              "lyrics": "E em verdade",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1khq1gz0",
+              "lyrics": "Te adoramos",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kyu8qso",
+              "lyrics": "Te adoramos",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kcw62wu",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kg2ml6v",
+              "lyrics": "Em Espírito",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k89wtsb",
+              "lyrics": "E em verdade",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kyhu92o",
+              "lyrics": "Te adoramos",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1koyf3fp",
+              "lyrics": "Te adoramos",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k7t2oyh",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k6uu31k",
+              "lyrics": "Rei dos Reis",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1klfuv8s",
+              "lyrics": "E Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k93jqfh",
+              "lyrics": "Te entregamos",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k03ivze",
+              "lyrics": "Nosso viver",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kvx8l1p",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1ko916le",
+              "lyrics": "Rei dos Reis",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kbc2sda",
+              "lyrics": "E Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kt2v5vi",
+              "lyrics": "Te entregamos",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kgyvlx5",
+              "lyrics": "Nosso viver",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kk5ff02",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k2y95bb",
+              "lyrics": "Pra Te adorar, oh Rei dos Reis",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kx0ht6o",
+              "lyrics": "Foi que eu nasci, oh Rei Jesus",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kddw5pc",
+              "lyrics": "Meu prazer é Te louvar",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1ky63y6o",
+              "lyrics": "Meu prazer é estar",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kdw9sq2",
+              "lyrics": "Nos átrios do Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kro1l1c",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kobeafg",
+              "lyrics": "Meu prazer é viver",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k0wy6jf",
+              "lyrics": "Na casa de Deus",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1ka00mn0",
+              "lyrics": "Onde flui o amor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kbzgwwu",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kp189a3",
+              "lyrics": "Criou os céus, criou a Terra",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1koruy8p",
+              "lyrics": "Criou o Sol e as estrelas",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k1cp0sm",
+              "lyrics": "Tudo Ele fez",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k34af0r",
+              "lyrics": "Tudo criou",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kswz7h5",
+              "lyrics": "Tudo formou",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1katbjry",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1ka0fg07",
+              "lyrics": "Para o Teu louvor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k1iq7a9",
+              "lyrics": "Para o Teu louvor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1khlb5v3",
+              "lyrics": "Para o Teu",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k51r5xt",
+              "lyrics": "Para o Teu",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1ks6i7wd",
+              "lyrics": "Para o Teu louvor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k5g0m0s",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1knayhz6",
+              "lyrics": "Maravilhoso é",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k8gp9xx",
+              "lyrics": "Estar em Tua presença",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kghiqxx",
+              "lyrics": "Maravilhoso é",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kvo4tzx",
+              "lyrics": "Poder Te adorar",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kmh9wut",
+              "lyrics": "Maravilhoso é",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kkz7sgc",
+              "lyrics": "Tocar em Tuas vestes",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k5ncnkl",
+              "lyrics": "Maravilhoso é",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kg2n5kz",
+              "lyrics": "Te contemplar, Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1ke4epra",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k8ef4ec",
+              "lyrics": "Maior é o que está em nós",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k56fak6",
+              "lyrics": "Do que o que está no mundo",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kxscecv",
+              "lyrics": "(Bem maior) maior é o que está em nós",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kzu51m9",
+              "lyrics": "Do que o que está no mundo",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kjo9jlf",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kfayq6o",
+              "lyrics": "Bem maior é o que está em nós",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1kbem6wb",
+              "lyrics": "Do que o que está no mundo",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1k4lkzou",
+              "lyrics": "(Bem maior) maior é o que está em nós",
+              "tags": []
+            },
+            {
+              "id": "mqh3ha1knpe2lt",
+              "lyrics": "Do que o que está no mundo",
+              "tags": []
+            }
+          ]
+        }
+      ],
+      "createdAt": 1781641717014,
+      "updatedAt": 1781641741330
+    },
+    {
+      "id": "mqh3i6kzzm73dc",
+      "title": "Promessas (Promises)",
+      "artist": "S. Messias & Sarah | Maverick City",
+      "bpm": 0,
+      "sections": [
+        {
+          "id": "mqh3iq94yl3bkq",
+          "name": "Intro",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh3iq94q3567n",
+              "lyrics": "Deus de Abraão, sei que nunca quebrará a aliança que me fez",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94jdm1v1",
+              "lyrics": "Provado já está que o que prometeu Ele cumprirá",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq949szkne",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ty4gli",
+              "lyrics": "Mesmo em meio ao vento e à tempestade, eu firme estarei",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94j6pdx1",
+              "lyrics": "Que eu possa entender, se Ele prometeu, vai acontecer",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ibg1ki",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq948vy7tn",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94fk0mgd",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94zysqt0",
+              "lyrics": "Do nascer do Sol ao anoitecer, eu Te louvarei",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94jz69n0",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94rzbhoo",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq940plt12",
+              "lyrics": "Tudo passará, mas Tua palavra permanecerá",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94zf99ip",
+              "lyrics": "A história já provou o Teu poder, Senhor, fiel é o Teu amor",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ekhc6x",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94tgq66e",
+              "lyrics": "Mesmo em meio ao vento e à tempestade, eu firme estarei",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq945ae9gd",
+              "lyrics": "Que eu possa entender, se Ele prometeu, vai acontecer",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ekwhgm",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94xx506q",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94q30n4j",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq9415d0ic",
+              "lyrics": "Do nascer do Sol ao anoitecer, eu Te louvarei",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94hk78g0",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94n0h5di",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94cj4gvz",
+              "lyrics": "Minha fé está em Cristo",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq949xxawt",
+              "lyrics": "Firmado Nele estou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94xck83e",
+              "lyrics": "Ele é a minha rocha",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ufl537",
+              "lyrics": "Que nunca me deixou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ug9fln",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94g9heh5",
+              "lyrics": "Minha fé está em Cristo",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ptd6i4",
+              "lyrics": "Firmado Nele estou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq941emrgw",
+              "lyrics": "Ele é a minha rocha",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94h1wbbw",
+              "lyrics": "Que nunca me deixou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94hau8t9",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94mcyvbn",
+              "lyrics": "Minha fé está em Cristo",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94c6vlds",
+              "lyrics": "Firmado Nele estou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94k67vwi",
+              "lyrics": "Ele é a minha rocha",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq949mn83d",
+              "lyrics": "Que nunca me deixou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94y2l7sb",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94pf15jq",
+              "lyrics": "Minha fé está em Cristo",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94fseeby",
+              "lyrics": "Firmado Nele estou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ztuzsr",
+              "lyrics": "Ele é a minha rocha",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ah3f2a",
+              "lyrics": "Que nunca me deixou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94c9dmdb",
+              "lyrics": "Que nunca me deixou",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq946ykbji",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq9441tpel",
+              "lyrics": "(Eu Te louvo)",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq940mu15o",
+              "lyrics": "Eu Te louvo em todo tempo",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94f4njtb",
+              "lyrics": "Eu Te louvo em meio as provações",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq942r8l6z",
+              "lyrics": "(E eu Te louvo)",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94q8voqr",
+              "lyrics": "Eu Te louvo quando tudo está perdido",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ywx3w8",
+              "lyrics": "Quando não há mais saída, eu Te louvo",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94ndd6cs",
+              "lyrics": "(E eu Te louvo)",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94fta9w3",
+              "lyrics": "Quando o vento está soprando",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94w025z8",
+              "lyrics": "Quando não há mais saída",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94g23gmc",
+              "lyrics": "(E eu Te louvo)",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94gxinxh",
+              "lyrics": "Quando tudo está perdido, yeah (eu Te louvo)",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94a58pcb",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94af5whp",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq94nie4bq",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq95x558f2",
+              "lyrics": "Do nascer do Sol ao anoitecer, eu Te louvarei",
+              "tags": []
+            },
+            {
+              "id": "mqh3iq9515zul8",
+              "lyrics": "Fiel, Tu és, Senhor, a mim",
+              "tags": []
+            }
+          ],
+          "dynamics": ""
+        }
+      ],
+      "createdAt": 1781641763027,
+      "updatedAt": 1781646659972
+    },
+    {
+      "id": "mqh3lfimrg75sr",
+      "title": "Caminho no Deserto / Way Maker",
+      "artist": "Sarah Fernandes | Leeland",
+      "bpm": 0,
+      "sections": [
+        {
+          "id": "mqh3lj8m4sw0bh",
+          "name": "Intro",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh3lj8m220hfh",
+              "lyrics": "Estás aqui, eu sinto Sua presença",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mtrttbs",
+              "lyrics": "Adoro a Ti, adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m4r0gj6",
+              "lyrics": "Estás aqui, quebrando as prisões",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m36veut",
+              "lyrics": "Adoro a Ti, adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m3we1xy",
+              "lyrics": "Estás aqui, transformando vidas",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mckx06j",
+              "lyrics": "Adoro a Ti, adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mg623tt",
+              "lyrics": "Estás aqui, manifestando a sua graça",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mawuaa3",
+              "lyrics": "Adoro a Ti, adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mu0iofk",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mmetzyq",
+              "lyrics": "Caminho em meio ao deserto",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m79z1e3",
+              "lyrics": "Deus de milagres luz na escuridão",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m3p51x1",
+              "lyrics": "Este é o meu Deus",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mhfq7g0",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mtld017",
+              "lyrics": "Estás aqui, tocando cada coração",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8me9py4v",
+              "lyrics": "Adoro a Ti adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mgrg352",
+              "lyrics": "Estás aqui, manifestando teus milagres",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mbaj87h",
+              "lyrics": "Adoro a Ti, adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mdq0ga3",
+              "lyrics": "Estás aqui, sarando as feridas",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8migtrwk",
+              "lyrics": "Adoro a Ti, adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mmjup7a",
+              "lyrics": "Estás aqui, é real sua presença",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m2uzmcj",
+              "lyrics": "Adoro a Ti, adoro a Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mi9qn79",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m84an3p",
+              "lyrics": "Caminho em meio ao deserto",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mj1980q",
+              "lyrics": "Deus de milagres, luz na escuridão",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m0gz5vu",
+              "lyrics": "Este é o meu Deus!",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mvi8i2n",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m9o73u7",
+              "lyrics": "Ele enxuga as lágrimas",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mu937uv",
+              "lyrics": "Ele restaura os corações",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m7jct64",
+              "lyrics": "Todo o poder está em Suas mãos",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m8b5bor",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mox7rti",
+              "lyrics": "Deus de poder, Deus de milagres",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m79r15n",
+              "lyrics": "Deus de promessas",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mkv30rl",
+              "lyrics": "Luz na escuridão",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8m00dl2r",
+              "lyrics": "Este é o meu Deus!",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8msjedwk",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mpoiee4",
+              "lyrics": "Este é um Deus de promessas",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mkidrsl",
+              "lyrics": "Este é o Deus que faz milagres",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mm86b39",
+              "lyrics": "Este é o meu Deus, este é o meu Deus!",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mlc2ogg",
+              "lyrics": "Este é o Deus que cura",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8ml28toc",
+              "lyrics": "Este é o Deus que quebra as prisões",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mw4lzwl",
+              "lyrics": "Ele é o Caminho, este é o meu Deus!",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8msdfmye",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mw8lnhf",
+              "lyrics": "Caminho em meio ao deserto",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8me7i8mf",
+              "lyrics": "Deus de milagres, luz na escuridão",
+              "tags": []
+            },
+            {
+              "id": "mqh3lj8mweep1w",
+              "lyrics": "Este é o meu Deus!",
+              "tags": []
+            }
+          ]
+        }
+      ],
+      "createdAt": 1781641914574,
+      "updatedAt": 1781641951071
+    },
+    {
+      "id": "mqh3mx65af2r47",
+      "title": "Bendito é o Rei",
+      "artist": "FHOP",
+      "bpm": 0,
+      "sections": [
+        {
+          "id": "mqh3n3p59djvz8",
+          "name": "Intro",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh3n3p5du9iv8",
+              "lyrics": "Antes separados destituídos da glória de Deus",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p50rtm5c",
+              "lyrics": "Agora justificados, pelo sangue feitos filhos de Deus",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5d39ewo",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5c2o8df",
+              "lyrics": "Cante, cante, cante",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p51gxzmf",
+              "lyrics": "Exalte ao Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5kjpm4o",
+              "lyrics": "Grandes são seus feitos entre as nações",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p56ksoru",
+              "lyrics": "Povos, tribos, línguas",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5c6uiml",
+              "lyrics": "Em uma só voz",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5knl6i1",
+              "lyrics": "Saudai o Rei com devido louvor",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5xaudtl",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5gkvy3x",
+              "lyrics": "Antes separados destituídos da glória de Deus",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5o88gcg",
+              "lyrics": "Agora justificados, pelo sangue feitos filhos de Deus",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5m2d96c",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5cxt1la",
+              "lyrics": "Cante, cante, cante",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p59pmakx",
+              "lyrics": "Exalte ao Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5vf37by",
+              "lyrics": "Grandes são seus feitos entre as nações",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5ahw44y",
+              "lyrics": "Povos, tribos, línguas",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p59005it",
+              "lyrics": "Em uma só voz",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5oo418e",
+              "lyrics": "Saudai o Rei com devido louvor",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5h67rge",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p56q007v",
+              "lyrics": "Transformou nosso pranto",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p57yiuim",
+              "lyrics": "Nossa vergonha em honra",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5nrnesy",
+              "lyrics": "Nos deu novo nome",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5vzphzl",
+              "lyrics": "Para o louvor de sua glória",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5r7s2vm",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5s2y85d",
+              "lyrics": "Dai louvor com palmas",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5hch8wx",
+              "lyrics": "Dai louvor Ele é digno",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5u59044",
+              "lyrics": "Dai louvor com sua voz",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5uzlxtj",
+              "lyrics": "Bendito é o Rei, bendito é o Rei",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5x6hr8w",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p54u6ptt",
+              "lyrics": "Venham de todos os cantos",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5shpdrn",
+              "lyrics": "Louve todo ser que tem fôlego",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p52t3jgn",
+              "lyrics": "Grite: Bendito é o Rei, bendito é o Rei, bendito é o Rei!",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p51bylyf",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5p3cvik",
+              "lyrics": "Cante, cante, cante",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5hhbe8y",
+              "lyrics": "Exalte ao Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5zq2ig7",
+              "lyrics": "Grandes são seus feitos entre as nações",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p5fj52xd",
+              "lyrics": "Povos, tribos, línguas",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p50n5vyu",
+              "lyrics": "Em uma só voz",
+              "tags": []
+            },
+            {
+              "id": "mqh3n3p54ob4wo",
+              "lyrics": "Saudai o Rei com devido louvor",
+              "tags": []
+            }
+          ],
+          "notes": ""
+        }
+      ],
+      "createdAt": 1781641984109,
+      "updatedAt": 1781646846065,
+      "timeSignature": "3/4"
+    },
+    {
+      "id": "mqh3o621j4mw29",
+      "title": "Só em Ti",
+      "artist": "Novo Canto",
+      "bpm": 0,
+      "sections": [
+        {
+          "id": "mqh3oa3u5wwqye",
+          "name": "Intro",
+          "tags": [],
+          "lines": [
+            {
+              "id": "mqh3oa3um1vno2",
+              "lyrics": "Tanto tempo fui vazio",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3umh9plj",
+              "lyrics": "Numa vida sem temor",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ulews71",
+              "lyrics": "Pra minh’alma achei descanso",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ujcfhhn",
+              "lyrics": "Só na cruz do meu Senhor",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3utroh4q",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3umt95kh",
+              "lyrics": "Eu vaguei na escuridão",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ulgtesc",
+              "lyrics": "Sem Tua luz pra me guiar",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ujc38e4",
+              "lyrics": "Me chamou pra perto de Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ujhsqx6",
+              "lyrics": "Pra minha culpa aliviar",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uqjwepn",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uu17dox",
+              "lyrics": "Só em Ti, só em Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ujpfxi3",
+              "lyrics": "Graça e amor fluem por mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uesjyoo",
+              "lyrics": "Só em Ti, só em Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3umq23u6",
+              "lyrics": "Acho paz, descanso enfim",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ubrv3eg",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3up813oy",
+              "lyrics": "Só em Ti minha fé se firma",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uvwetdb",
+              "lyrics": "Só em Cristo Salvador",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uubirfu",
+              "lyrics": "Sei que então fui perdoado",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uo65yaf",
+              "lyrics": "Na Tua obra de amor",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3udo3d8o",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uooff1k",
+              "lyrics": "E eu sei que me sustentas",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3u5xvtsk",
+              "lyrics": "Nada vai nos separar",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3u8iqrbn",
+              "lyrics": "Me asseguro nessa graça",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3u3q1z5p",
+              "lyrics": "Aos Seus pés eu quero estar",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3u9vydmy",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3ui49egl",
+              "lyrics": "Encontro paz",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uxllh5m",
+              "lyrics": "Descanso enfim",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uo1vgx8",
+              "lyrics": "Encontro ali",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3u3pyh6w",
+              "lyrics": "Minha esperança pra viver",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3upmjr9s",
+              "lyrics": "",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3u5ce4cf",
+              "lyrics": "Só em Ti, só em Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3u0djcxd",
+              "lyrics": "Graça e amor fluem por mim",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uvoad6t",
+              "lyrics": "Só em Ti, só em Ti",
+              "tags": []
+            },
+            {
+              "id": "mqh3oa3uk6x2o3",
+              "lyrics": "Acho paz, descanso enfim",
+              "tags": []
+            }
+          ]
+        }
+      ],
+      "createdAt": 1781642042281,
+      "updatedAt": 1781642064921
+    }
+  ],
+  "setlists": [
+    {
+      "id": "mqh3co02p53317",
+      "name": "Culto JVTD 20 Jun",
+      "songIds": [
+        "mqh3h72u9lvyea",
+        "mqh3mx65af2r47",
+        "mqh3o621j4mw29"
+      ],
+      "createdAt": 1781641505666
+    },
+    {
+      "id": "mqh3cwgfza8l6i",
+      "name": "Culto Quinta 18 Jun",
+      "songIds": [
+        "mqh38uv5ofjd0g",
+        "mqh3i6kzzm73dc",
+        "mqh3lfimrg75sr"
+      ],
+      "createdAt": 1781641516623
+    }
+  ],
+  "tags": [
+    "KC",
+    "CX",
+    "HH",
+    "GROOVE VERSO",
+    "GROOVE DISCO",
+    "BREAKDOWN",
+    "BUILD",
+    "BUILDING",
+    "BREAK",
+    "CONVENTION",
+    "TRIBAL",
+    "PROGRESSIVE ROCK",
+    "LEVADA ALTA",
+    "LEVADA FULL",
+    "CX + KC",
+    "CX + SURDO + KC",
+    "BREAK TO BUILD",
+    "KC + ARO",
+    "KC + TONS",
+    "OFF",
+    "SAIDA"
+  ],
+  "settings": {
+    "scrollSpeed": 3,
+    "fontSize": 16,
+    "backupMinutes": 15
+  },
+  "exportedAt": "2026-06-16T22:56:18.569Z",
+  "version": 1
+}

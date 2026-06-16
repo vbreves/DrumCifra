@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#000000">
+  <title>DrumCifra</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header id="topbar">
+    <button id="back-btn" class="icon-btn hidden" aria-label="Voltar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <h1 id="topbar-title">DrumCifra</h1>
+    <div id="topbar-actions"></div>
+  </header>
+
+  <!-- Save Status Indicator -->
+  <div id="save-status" class="save-status hidden"></div>
+
+  <!-- Main Content -->
+  <main id="app"></main>
+
+  <!-- Bottom Navigation -->
+  <nav id="bottom-nav">
+    <button data-view="song-list" class="nav-btn active" aria-label="Músicas">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+      <span>Músicas</span>
+    </button>
+    <button data-view="setlist-list" class="nav-btn" aria-label="Setlist">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      <span>Setlist</span>
+    </button>
+    <button data-view="settings" class="nav-btn" aria-label="Configurações">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      <span>Config</span>
+    </button>
+  </nav>
+
+  <!-- Tag Picker Modal -->
+  <div id="tag-picker-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Selecionar Tag</h2>
+        <button class="modal-close icon-btn" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="tag-search" placeholder="Buscar ou criar tag..." autocomplete="off">
+        <div id="tag-grid" class="tag-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-small">
+      <div class="modal-body">
+        <p id="confirm-message"></p>
+        <div class="modal-actions">
+          <button id="confirm-cancel" class="btn btn-ghost">Cancelar</button>
+          <button id="confirm-ok" class="btn btn-danger">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setlist Song Picker Modal -->
+  <div id="song-picker-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Adicionar Música</h2>
+        <button class="modal-close icon-btn" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="song-picker-search" placeholder="Buscar música..." autocomplete="off">
+        <div id="song-picker-list" class="list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="import-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-small">
+      <div class="modal-header">
+        <h2>Importar Dados</h2>
+        <button class="modal-close icon-btn" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-secondary">Cole o JSON exportado ou selecione um arquivo .json</p>
+        <textarea id="import-textarea" rows="6" placeholder='{"songs":[], "setlists":[], "tags":[]}'></textarea>
+        <input type="file" id="import-file" accept=".json" style="display:none">
+        <div class="modal-actions">
+          <button id="import-file-btn" class="btn btn-ghost">Selecionar Arquivo</button>
+          <button id="import-confirm-btn" class="btn btn-primary">Importar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paste Lyrics Modal -->
+  <div id="paste-lyrics-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Colar Letra Completa</h2>
+        <button class="modal-close icon-btn" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-secondary" style="margin-bottom:var(--space-sm)">Cole a letra inteira. Nomes de seções (Chorus, Verse 1, Intro, etc.) serão detectados automaticamente.</p>
+        <textarea id="paste-lyrics-textarea" rows="14" placeholder="Chorus
+
+Alleluia
+You get all the praise
+
+Verse 1
+
+I've got a God who is for me..."></textarea>
+        <div class="modal-actions">
+          <button id="paste-lyrics-clear" class="btn btn-ghost">Limpar</button>
+          <button id="paste-lyrics-confirm" class="btn btn-primary">Importar Letra</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
