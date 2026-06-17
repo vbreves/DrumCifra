@@ -36,6 +36,10 @@ const DEFAULT_TAGS = [
   'OFF', 'SAIDA'
 ];
 
+const DEFAULT_TRANSITIONS = [
+  'virada', 'fill', 'break', 'corte seco', 'build', 'crescendo'
+];
+
 const DEFAULT_SECTIONS = [
   'Intro', 'Verso', 'Verso 2', 'Verso 3', 'Verso 4',
   'Pré-Refrão', 'Pré-Refrão 2', 'Pré-Refrão 3',
@@ -264,6 +268,8 @@ const Storage = {
   saveSetlists(setlists) { this._set('setlists', setlists); },
   getTags() { return this._get('tags') || [...DEFAULT_TAGS]; },
   saveTags(tags) { this._set('tags', tags); },
+  getTransitions() { return this._get('transitions') || [...DEFAULT_TRANSITIONS]; },
+  saveTransitions(transitions) { this._set('transitions', transitions); },
   getSettings() { return this._get('settings') || { scrollSpeed: 3, fontSize: 16, backupMinutes: 15 }; },
   saveSettings(settings) { this._set('settings', settings); },
 
@@ -462,7 +468,7 @@ class Metronome {
 // APP
 // =============================================
 const App = {
-  songs: [], setlists: [], tags: [], settings: {},
+  songs: [], setlists: [], tags: [], transitions: [], settings: {},
   currentView: 'song-list', viewStack: [],
   editingSong: null, editingSongSnapshot: null,
   currentSongId: null, currentSetlistId: null,
@@ -477,6 +483,7 @@ const App = {
     this.songs = Storage.getSongs();
     this.setlists = Storage.getSetlists();
     this.tags = Storage.getTags();
+    this.transitions = Storage.getTransitions();
     this.settings = Storage.getSettings();
     this.viewerFontSize = parseInt(localStorage.getItem('drumcifra_viewerFontSize')) || 16;
     this.sortBy = localStorage.getItem('drumcifra_sortBy') || 'title';
@@ -524,7 +531,7 @@ const App = {
     const backBtn = document.getElementById('back-btn');
     const actions = document.getElementById('topbar-actions');
     actions.innerHTML = '';
-    backBtn.classList.toggle('hidden', ['song-list', 'setlist-list', 'settings'].includes(view));
+    backBtn.classList.toggle('hidden', ['song-list', 'setlist-list', 'practice', 'settings'].includes(view));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
     document.body.classList.remove('viewer-mode');
     document.getElementById('bottom-nav').classList.remove('hidden');
@@ -537,6 +544,7 @@ const App = {
       case 'setlist-list': title.textContent = 'Setlists'; this._renderSetlistList(); break;
       case 'setlist-editor': title.textContent = 'Editar Setlist'; this._renderSetlistEditor(params); break;
       case 'setlist-player': this._renderSetlistPlayer(params); break;
+      case 'practice': title.textContent = 'Prática'; this._renderPractice(); break;
       case 'settings': title.textContent = 'Configurações'; this._renderSettings(); break;
     }
   },
@@ -985,13 +993,13 @@ const App = {
       ).join(' ');
 
       const DYNAMICS = ['', 'pp', 'p', 'mp', 'mf', 'f', 'ff'];
-      const TRANSITIONS = ['', 'virada', 'fill', 'break', 'corte seco', 'build', 'crescendo'];
+      const TRANSITIONS = Storage.getTransitions();
 
       el.innerHTML = `
         ${sIdx > 0 ? `<div class="transition-row">
           <select class="transition-select" data-sidx="${sIdx}">
             <option value="">— sem transição —</option>
-            ${TRANSITIONS.filter(t => t).map(t => `<option value="${t}" ${section.transition === t ? 'selected' : ''}>${t.toUpperCase()}</option>`).join('')}
+            ${TRANSITIONS.map(t => `<option value="${t}" ${section.transition === t ? 'selected' : ''}>${t.toUpperCase()}</option>`).join('')}
           </select>
         </div>` : ''}
         <div class="section-header">
@@ -1724,6 +1732,8 @@ const App = {
     document.getElementById('app').innerHTML = `
       <div class="view">
         <div class="settings-group"><div class="settings-group-title">Tags de Bateria</div><div class="settings-tags-list" id="tags-list"></div><div class="add-tag-row"><input type="text" id="new-tag-input" placeholder="Nome da nova tag..." style="text-transform:uppercase"><button class="btn btn-primary btn-small" id="add-tag-btn">Adicionar</button></div></div>
+        <div class="settings-group"><div class="settings-group-title">Transições</div><div class="settings-tags-list" id="transitions-list"></div><div class="add-tag-row"><input type="text" id="new-transition-input" placeholder="Nova transição..."><button class="btn btn-primary btn-small" id="add-transition-btn">Adicionar</button></div></div>
+        <div class="settings-group"><div class="settings-group-title">Cores das Seções</div><div class="settings-item"><div class="settings-item-desc" style="width:100%">Defina cores para cada tipo de seção. As cores são usadas no viewer para identificar visualmente cada parte.</div></div><div id="section-colors-list" class="section-colors-grid"></div><div class="settings-item" id="reset-colors-btn" style="cursor:pointer;margin-top:2px"><div><div class="settings-item-label" style="color:var(--danger)">Restaurar cores padrão</div></div></div></div>
         <div class="settings-group"><div class="settings-group-title">Sincronização na Nuvem</div>
           ${!CloudSync.isAvailable ? `<div class="settings-item"><div><div class="settings-item-label" style="color:var(--danger)">Firebase não configurado</div><div class="settings-item-desc">Configure o arquivo firebase-config.js para ativar a sincronização.</div></div></div>` :
           CloudSync.isConnected ? `
@@ -1736,6 +1746,10 @@ const App = {
             <div class="settings-item"><div style="width:100%"><input type="text" id="sync-code-input" placeholder="Digite seu código pessoal (min. 3 caracteres)..." style="width:100%;margin-bottom:var(--space-xs)"><div style="display:flex;gap:var(--space-sm)"><button class="btn btn-primary btn-small" id="cloud-connect-btn">Conectar</button><button class="btn btn-ghost btn-small" id="cloud-connect-pull-btn">Conectar e Baixar</button></div></div></div>
           `}
         </div>
+        <div class="settings-group"><div class="settings-group-title">Exportar / Importar</div>
+          <div class="settings-item" id="export-btn" style="cursor:pointer"><div><div class="settings-item-label">Exportar tudo</div><div class="settings-item-desc">Salvar como JSON</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <div class="settings-item" id="import-btn" style="cursor:pointer"><div><div class="settings-item-label">Importar dados</div><div class="settings-item-desc">Restaurar de um backup</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        </div>
         <div class="settings-group"><div class="settings-group-title">Armazenamento em Arquivo</div>
           <div class="settings-item"><div><div class="settings-item-label">${Storage.isConnectedToFile ? 'Conectado: ' + escapeHtml(Storage.connectedFileName) : 'Nenhum arquivo conectado'}</div><div class="settings-item-desc">Salva automaticamente num arquivo .json no seu PC.</div></div></div>
           <div class="settings-item" id="connect-file-btn" style="cursor:pointer"><div><div class="settings-item-label">${Storage.isConnectedToFile ? 'Trocar arquivo' : 'Escolher arquivo para salvar'}</div><div class="settings-item-desc">Cria ou escolhe um .json no seu computador</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
@@ -1746,11 +1760,6 @@ const App = {
           <div class="settings-item"><div><div class="settings-item-label">Intervalo de backup</div><div class="settings-item-desc">Baixa um backup automaticamente</div></div><select id="backup-interval-select" style="width:auto;padding:6px 10px;border-radius:var(--radius-sm);background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border)"><option value="0" ${this.settings.backupMinutes===0?'selected':''}>Desligado</option><option value="5" ${this.settings.backupMinutes===5?'selected':''}>5 min</option><option value="15" ${this.settings.backupMinutes===15||this.settings.backupMinutes===undefined?'selected':''}>15 min</option><option value="30" ${this.settings.backupMinutes===30?'selected':''}>30 min</option><option value="60" ${this.settings.backupMinutes===60?'selected':''}>1 hora</option></select></div>
           <div class="settings-item" id="backup-now-btn" style="cursor:pointer"><div><div class="settings-item-label">Fazer backup agora</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
         </div>
-        <div class="settings-group"><div class="settings-group-title">Exportar / Importar</div>
-          <div class="settings-item" id="export-btn" style="cursor:pointer"><div><div class="settings-item-label">Exportar tudo</div><div class="settings-item-desc">Salvar como JSON</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
-          <div class="settings-item" id="import-btn" style="cursor:pointer"><div><div class="settings-item-label">Importar dados</div><div class="settings-item-desc">Restaurar de um backup</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-        </div>
-        <div class="settings-group"><div class="settings-group-title">Cores das Seções</div><div class="settings-item"><div class="settings-item-desc" style="width:100%">Defina cores para cada tipo de seção. As cores são usadas no viewer para identificar visualmente cada parte.</div></div><div id="section-colors-list" class="section-colors-grid"></div><div class="settings-item" id="reset-colors-btn" style="cursor:pointer;margin-top:2px"><div><div class="settings-item-label" style="color:var(--danger)">Restaurar cores padrão</div></div></div></div>
         <div class="settings-group"><div class="settings-group-title">Estatísticas</div>
           <div class="settings-item"><span class="settings-item-label">Músicas</span><span class="text-accent" style="font-weight:700;font-family:var(--font-mono)">${this.songs.length}</span></div>
           <div class="settings-item"><span class="settings-item-label">Setlists</span><span class="text-accent" style="font-weight:700;font-family:var(--font-mono)">${this.setlists.length}</span></div>
@@ -1760,6 +1769,7 @@ const App = {
       </div>
     `;
     this._renderTagsList();
+    this._renderTransitionsList();
     this._renderSectionColorsList();
     const ati = document.getElementById('new-tag-input');
     document.getElementById('add-tag-btn').addEventListener('click', () => { const n = ati.value.trim().toUpperCase(); if (n && !this.tags.includes(n)) { this.tags.push(n); Storage.saveTags(this.tags); ati.value = ''; this._renderTagsList(); } });
@@ -1834,6 +1844,37 @@ const App = {
     });
   },
 
+  _renderTransitionsList() {
+    const c = document.getElementById('transitions-list'); if (!c) return;
+    const transitions = Storage.getTransitions().slice().sort((a, b) => a.localeCompare(b, 'pt'));
+    c.innerHTML = transitions.map((t) => {
+      const idx = Storage.getTransitions().indexOf(t);
+      return `<span class="settings-tag">${escapeHtml(t.toUpperCase())}<button class="remove-btn" data-idx="${idx}">&times;</button></span>`;
+    }).join('');
+    c.querySelectorAll('.remove-btn').forEach(b => b.addEventListener('click', () => {
+      const trans = Storage.getTransitions();
+      trans.splice(parseInt(b.dataset.idx), 1);
+      Storage.saveTransitions(trans);
+      this._renderTransitionsList();
+    }));
+    // Bind add button
+    const addBtn = document.getElementById('add-transition-btn');
+    const addInput = document.getElementById('new-transition-input');
+    if (addBtn && addInput) {
+      addBtn.onclick = () => {
+        const val = addInput.value.trim().toLowerCase();
+        if (val && !Storage.getTransitions().includes(val)) {
+          const trans = Storage.getTransitions();
+          trans.push(val);
+          Storage.saveTransitions(trans);
+          addInput.value = '';
+          this._renderTransitionsList();
+        }
+      };
+      addInput.onkeydown = (e) => { if (e.key === 'Enter') addBtn.click(); };
+    }
+  },
+
   // =============================================
   // TAG / SONG PICKER MODALS
   // =============================================
@@ -1880,6 +1921,540 @@ const App = {
     const onOk = () => { cleanup(); onConfirm(); };
     const onCancel = () => { cleanup(); };
     ok.addEventListener('click', onOk); cancel.addEventListener('click', onCancel);
+  },
+
+  // =============================================
+  // PRACTICE TAB
+  // =============================================
+  _practiceMetronome: null,
+  _practiceTimer: null,
+  _practiceTimerSeconds: 0,
+  _practiceSpeedUp: null,
+  _tapTempoTimes: [],
+
+  _getRudiments() {
+    return [
+      { id: 'single-stroke-roll', name: 'Single Stroke Roll', category: 'Rolls', pattern: 'R L R L R L R L', bpm: { beginner: 60, intermediate: 120, advanced: 180 } },
+      { id: 'double-stroke-roll', name: 'Double Stroke Roll', category: 'Rolls', pattern: 'R R L L R R L L', bpm: { beginner: 60, intermediate: 100, advanced: 160 } },
+      { id: 'triple-stroke-roll', name: 'Triple Stroke Roll', category: 'Rolls', pattern: 'R R R L L L', bpm: { beginner: 50, intermediate: 90, advanced: 140 } },
+      { id: 'five-stroke-roll', name: 'Five Stroke Roll', category: 'Rolls', pattern: 'R R L L R', bpm: { beginner: 60, intermediate: 100, advanced: 150 } },
+      { id: 'six-stroke-roll', name: 'Six Stroke Roll', category: 'Rolls', pattern: 'R L L R R L', bpm: { beginner: 60, intermediate: 100, advanced: 150 } },
+      { id: 'seven-stroke-roll', name: 'Seven Stroke Roll', category: 'Rolls', pattern: 'R R L L R R L', bpm: { beginner: 55, intermediate: 95, advanced: 145 } },
+      { id: 'single-paradiddle', name: 'Single Paradiddle', category: 'Paradiddles', pattern: 'R L R R  L R L L', bpm: { beginner: 60, intermediate: 110, advanced: 170 } },
+      { id: 'double-paradiddle', name: 'Double Paradiddle', category: 'Paradiddles', pattern: 'R L R L R R  L R L R L L', bpm: { beginner: 50, intermediate: 90, advanced: 140 } },
+      { id: 'triple-paradiddle', name: 'Triple Paradiddle', category: 'Paradiddles', pattern: 'R L R L R L R R  L R L R L R L L', bpm: { beginner: 45, intermediate: 80, advanced: 130 } },
+      { id: 'paradiddle-diddle', name: 'Paradiddle-Diddle', category: 'Paradiddles', pattern: 'R L R R L L', bpm: { beginner: 55, intermediate: 100, advanced: 150 } },
+      { id: 'flam', name: 'Flam', category: 'Flams', pattern: 'lR  rL', bpm: { beginner: 60, intermediate: 100, advanced: 150 } },
+      { id: 'flam-accent', name: 'Flam Accent', category: 'Flams', pattern: 'lR L R  rL R L', bpm: { beginner: 55, intermediate: 90, advanced: 140 } },
+      { id: 'flam-tap', name: 'Flam Tap', category: 'Flams', pattern: 'lR R  rL L', bpm: { beginner: 55, intermediate: 95, advanced: 145 } },
+      { id: 'flamacue', name: 'Flamacue', category: 'Flams', pattern: 'lR L R L  rL R L R', bpm: { beginner: 50, intermediate: 85, advanced: 130 } },
+      { id: 'flam-paradiddle', name: 'Flam Paradiddle', category: 'Flams', pattern: 'lR L R R  rL R L L', bpm: { beginner: 50, intermediate: 90, advanced: 135 } },
+      { id: 'drag', name: 'Drag (Ruff)', category: 'Drags', pattern: 'llR  rrL', bpm: { beginner: 60, intermediate: 100, advanced: 150 } },
+      { id: 'single-drag-tap', name: 'Single Drag Tap', category: 'Drags', pattern: 'llR L  rrL R', bpm: { beginner: 55, intermediate: 95, advanced: 140 } },
+      { id: 'double-drag-tap', name: 'Double Drag Tap', category: 'Drags', pattern: 'llR llR L  rrL rrL R', bpm: { beginner: 50, intermediate: 85, advanced: 130 } },
+      { id: 'lesson-25', name: 'Lesson 25', category: 'Drags', pattern: 'llR L R L  rrL R L R', bpm: { beginner: 50, intermediate: 85, advanced: 130 } },
+      { id: 'ratamacue', name: 'Ratamacue', category: 'Drags', pattern: 'llR L R  rrL R L', bpm: { beginner: 50, intermediate: 85, advanced: 130 } },
+      { id: 'buzz-roll', name: 'Buzz Roll (Press Roll)', category: 'Rolls', pattern: 'Rz Lz Rz Lz', bpm: { beginner: 50, intermediate: 80, advanced: 120 } },
+      { id: 'swiss-army-triplet', name: 'Swiss Army Triplet', category: 'Hybrid', pattern: 'lR R L  rL L R', bpm: { beginner: 50, intermediate: 90, advanced: 140 } },
+      { id: 'inverted-flam-tap', name: 'Inverted Flam Tap', category: 'Hybrid', pattern: 'lR lR  rL rL', bpm: { beginner: 50, intermediate: 85, advanced: 130 } },
+      { id: 'hertas', name: 'Hertas', category: 'Hybrid', pattern: 'R L L R  L R R L', bpm: { beginner: 55, intermediate: 95, advanced: 145 } },
+      { id: 'cheese', name: 'Cheese (Flam Drag)', category: 'Hybrid', pattern: 'llR  rrL  llR  rrL', bpm: { beginner: 50, intermediate: 85, advanced: 130 } }
+    ];
+  },
+
+  _formatRudimentPattern(pattern) {
+    // Format R (right) and L (left) with distinct colors, lowercase = grace notes (smaller)
+    return pattern.split('').map(ch => {
+      if (ch === 'R') return '<span class="pat-r">R</span>';
+      if (ch === 'L') return '<span class="pat-l">L</span>';
+      if (ch === 'r') return '<span class="pat-r pat-grace">r</span>';
+      if (ch === 'l') return '<span class="pat-l pat-grace">l</span>';
+      if (ch === 'z') return '<span class="pat-buzz">z</span>';
+      if (ch === ' ') return '<span class="pat-space"> </span>';
+      return ch;
+    }).join('');
+  },
+
+  _getPracticeProgress() {
+    return JSON.parse(localStorage.getItem('drumcifra_practiceProgress') || '{}');
+  },
+
+  _savePracticeProgress(progress) {
+    localStorage.setItem('drumcifra_practiceProgress', JSON.stringify(progress));
+  },
+
+  _getPracticeHistory() {
+    return JSON.parse(localStorage.getItem('drumcifra_practiceHistory') || '[]');
+  },
+
+  _savePracticeHistory(history) {
+    localStorage.setItem('drumcifra_practiceHistory', JSON.stringify(history));
+  },
+
+  _renderPractice() {
+    // Stop any running practice metronome when entering/re-entering
+    if (this._practiceMetronome) { this._practiceMetronome.stop(); this._practiceMetronome = null; }
+    document.getElementById('app').innerHTML = `
+      <div class="view">
+        <div class="practice-tabs">
+          <button class="practice-tab active" data-tab="metronome">Metronomo</button>
+          <button class="practice-tab" data-tab="rudiments">Rudimentos</button>
+          <button class="practice-tab" data-tab="dynamics">Dinamica</button>
+        </div>
+        <div id="practice-content"></div>
+      </div>
+    `;
+    document.querySelectorAll('.practice-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.practice-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        this._renderPracticeTab(tab.dataset.tab);
+      });
+    });
+    this._renderPracticeTab('metronome');
+  },
+
+  _renderPracticeTab(tab) {
+    // Stop metronome when switching away from it
+    if (tab !== 'metronome' && this._practiceMetronome) {
+      this._practiceMetronome.stop();
+      this._practiceMetronome = null;
+      this._stopPracticeTimer();
+    }
+    switch (tab) {
+      case 'metronome': this._renderPracticeMetronome(); break;
+      case 'rudiments': this._renderPracticeRudiments(); break;
+      case 'dynamics': this._renderPracticeDynamics(); break;
+    }
+  },
+
+  // ---- PRACTICE: Metronome ----
+  _renderPracticeMetronome() {
+    // Stop any previous instance to prevent orphan audio
+    if (this._practiceMetronome) { this._practiceMetronome.stop(); this._practiceMetronome = null; }
+    if (this._practiceSpeedUp) { clearInterval(this._practiceSpeedUp); this._practiceSpeedUp = null; }
+
+    const savedBpm = parseInt(localStorage.getItem('drumcifra_practiceBpm')) || 100;
+    const savedTimeSig = localStorage.getItem('drumcifra_practiceTimeSig') || '4/4';
+    const savedSubdiv = localStorage.getItem('drumcifra_practiceSubdiv') || '1';
+    const beatsPerBar = parseInt(savedTimeSig.split('/')[0]) || 4;
+
+    // Check if we're practicing a specific rudiment
+    const currentRudimentId = localStorage.getItem('drumcifra_currentRudiment');
+    const rudiments = this._getRudiments();
+    const currentRudiment = currentRudimentId ? rudiments.find(r => r.id === currentRudimentId) : null;
+    const progress = this._getPracticeProgress();
+    const rudimentProgress = currentRudiment ? (progress[currentRudiment.id] || {}) : null;
+
+    // Session stats
+    const history = this._getPracticeHistory();
+    const today = new Date().toISOString().slice(0, 10);
+    const todayEntry = history.find(h => h.date === today);
+    const todayMinutes = todayEntry ? Math.floor(todayEntry.seconds / 60) : 0;
+    const goal = parseInt(localStorage.getItem('drumcifra_practiceGoal')) || 30;
+    let streak = 0;
+    const sortedDates = history.filter(h => h.seconds > 0).map(h => h.date).sort().reverse();
+    if (sortedDates.length > 0) {
+      let checkDate = new Date();
+      for (let i = 0; i < 365; i++) {
+        const dateStr = checkDate.toISOString().slice(0, 10);
+        if (sortedDates.includes(dateStr)) { streak++; }
+        else if (i > 0) break;
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+    }
+    const last7 = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const ds = d.toISOString().slice(0, 10);
+      const entry = history.find(h => h.date === ds);
+      last7.push({ day: d.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3), minutes: entry ? Math.floor(entry.seconds / 60) : 0 });
+    }
+    const maxMin = Math.max(...last7.map(d => d.minutes), goal);
+
+    document.getElementById('practice-content').innerHTML = `
+      <div class="practice-metronome">
+        ${currentRudiment ? `
+        <div class="met-rudiment-card">
+          <div class="met-rudiment-header">
+            <div class="met-rudiment-name">${escapeHtml(currentRudiment.name)}</div>
+            <button class="icon-btn met-rudiment-close" id="pract-rudiment-close" aria-label="Fechar">&times;</button>
+          </div>
+          <div class="met-rudiment-pattern">${this._formatRudimentPattern(currentRudiment.pattern)}</div>
+          <div class="met-rudiment-meta">
+            <span>Iniciante: ${currentRudiment.bpm.beginner}</span>
+            <span>Intermediario: ${currentRudiment.bpm.intermediate}</span>
+            <span>Avancado: ${currentRudiment.bpm.advanced}</span>
+          </div>
+          ${rudimentProgress.bestBpm ? `<div class="met-rudiment-best">Seu melhor: ${rudimentProgress.bestBpm} BPM</div>` : ''}
+          <button class="btn btn-ghost btn-small" id="pract-save-progress">Salvar Progresso (${savedBpm} BPM)</button>
+        </div>` : ''}
+        <div class="met-display">
+          <div class="met-bpm-value" id="pract-bpm-display">${savedBpm}</div>
+          <div class="met-bpm-label">BPM</div>
+        </div>
+        <div class="met-beats" id="pract-beats">
+          ${Array.from({length: beatsPerBar}, (_, i) => `<span class="met-beat-dot" data-beat="${i}"></span>`).join('')}
+        </div>
+        <div class="met-slider-row">
+          <button class="met-adj-btn" id="pract-bpm-minus">-5</button>
+          <input type="range" id="pract-bpm-slider" min="30" max="260" value="${savedBpm}" class="met-slider">
+          <button class="met-adj-btn" id="pract-bpm-plus">+5</button>
+        </div>
+        <div class="met-controls-row">
+          <select id="pract-time-sig" class="met-select">
+            <option value="4/4" ${savedTimeSig === '4/4' ? 'selected' : ''}>4/4</option>
+            <option value="3/4" ${savedTimeSig === '3/4' ? 'selected' : ''}>3/4</option>
+            <option value="5/4" ${savedTimeSig === '5/4' ? 'selected' : ''}>5/4</option>
+            <option value="6/8" ${savedTimeSig === '6/8' ? 'selected' : ''}>6/8</option>
+            <option value="7/8" ${savedTimeSig === '7/8' ? 'selected' : ''}>7/8</option>
+          </select>
+          <select id="pract-subdiv" class="met-select">
+            <option value="1" ${savedSubdiv === '1' ? 'selected' : ''}>Seminima</option>
+            <option value="2" ${savedSubdiv === '2' ? 'selected' : ''}>Colcheia</option>
+            <option value="3" ${savedSubdiv === '3' ? 'selected' : ''}>Tercina</option>
+            <option value="4" ${savedSubdiv === '4' ? 'selected' : ''}>Semicolcheia</option>
+          </select>
+        </div>
+        <div class="met-action-row">
+          <button class="btn btn-primary met-play-btn" id="pract-play">Iniciar</button>
+          <button class="btn btn-ghost met-tap-btn" id="pract-tap">Tap Tempo</button>
+        </div>
+        <div class="met-speedup-row">
+          <label class="met-speedup-label">
+            <input type="checkbox" id="pract-speedup-check"> Speed Up
+          </label>
+          <span class="met-speedup-config" id="pract-speedup-config" style="display:none">
+            +<input type="number" id="pract-speedup-amount" value="5" min="1" max="20" class="met-speedup-input"> BPM a cada
+            <input type="number" id="pract-speedup-bars" value="8" min="1" max="32" class="met-speedup-input"> bars
+            ate <input type="number" id="pract-speedup-max" value="200" min="40" max="300" class="met-speedup-input"> BPM
+          </span>
+        </div>
+        <div class="met-session-panel">
+          <div class="met-session-timer-row">
+            <div class="met-session-time" id="met-session-time">${this._formatTime(this._practiceTimerSeconds)}</div>
+            <div class="met-session-label">${this._practiceTimer ? 'praticando...' : 'tempo de pratica'}</div>
+          </div>
+          <div class="met-session-stats-row">
+            <div class="met-session-stat"><span class="met-stat-val">${todayMinutes}</span><span class="met-stat-lbl">min hoje</span></div>
+            <div class="met-session-stat"><span class="met-stat-val">${streak}</span><span class="met-stat-lbl">dias</span></div>
+            <div class="met-session-stat"><span class="met-stat-val">${goal}</span><span class="met-stat-lbl">meta</span></div>
+          </div>
+          <div class="met-session-chart">
+            ${last7.map(d => `<div class="met-chart-col"><div class="met-chart-bar"><div class="met-chart-fill" style="height:${maxMin > 0 ? (d.minutes / maxMin) * 100 : 0}%"></div></div><div class="met-chart-day">${d.day}</div></div>`).join('')}
+          </div>
+          <div class="met-session-goal-row">
+            <span>Meta:</span>
+            <input type="number" id="pract-goal-input" value="${goal}" min="5" max="240" class="met-speedup-input"> min/dia
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Goal input
+    document.getElementById('pract-goal-input').addEventListener('change', (e) => {
+      localStorage.setItem('drumcifra_practiceGoal', e.target.value);
+    });
+
+    // Rudiment card events
+    if (currentRudiment) {
+      document.getElementById('pract-rudiment-close').addEventListener('click', () => {
+        localStorage.removeItem('drumcifra_currentRudiment');
+        this._renderPracticeMetronome();
+      });
+      document.getElementById('pract-save-progress').addEventListener('click', () => {
+        const prog = this._getPracticeProgress();
+        const bpm = parseInt(document.getElementById('pract-bpm-display').textContent) || savedBpm;
+        if (!prog[currentRudiment.id]) prog[currentRudiment.id] = {};
+        if (!prog[currentRudiment.id].bestBpm || bpm > prog[currentRudiment.id].bestBpm) {
+          prog[currentRudiment.id].bestBpm = bpm;
+        }
+        prog[currentRudiment.id].lastPracticed = new Date().toISOString();
+        this._savePracticeProgress(prog);
+        Storage._showStatus('Progresso salvo: ' + bpm + ' BPM', 'success', 2000);
+        this._renderPracticeMetronome();
+      });
+    }
+
+    const bpmDisplay = document.getElementById('pract-bpm-display');
+    const slider = document.getElementById('pract-bpm-slider');
+    const playBtn = document.getElementById('pract-play');
+    let currentBpm = savedBpm;
+    let isPlaying = false;
+
+    const updateBpm = (bpm) => {
+      currentBpm = Math.max(30, Math.min(260, bpm));
+      bpmDisplay.textContent = currentBpm;
+      slider.value = currentBpm;
+      localStorage.setItem('drumcifra_practiceBpm', currentBpm);
+      if (isPlaying && this._practiceMetronome) { this._practiceMetronome.bpm = currentBpm; }
+    };
+
+    slider.addEventListener('input', () => updateBpm(parseInt(slider.value)));
+    document.getElementById('pract-bpm-minus').addEventListener('click', () => updateBpm(currentBpm - 5));
+    document.getElementById('pract-bpm-plus').addEventListener('click', () => updateBpm(currentBpm + 5));
+
+    document.getElementById('pract-time-sig').addEventListener('change', (e) => {
+      localStorage.setItem('drumcifra_practiceTimeSig', e.target.value);
+      this._renderPracticeMetronome();
+    });
+
+    document.getElementById('pract-subdiv').addEventListener('change', (e) => {
+      localStorage.setItem('drumcifra_practiceSubdiv', e.target.value);
+    });
+
+    // Tap Tempo
+    document.getElementById('pract-tap').addEventListener('click', () => {
+      const now = Date.now();
+      this._tapTempoTimes.push(now);
+      if (this._tapTempoTimes.length > 5) this._tapTempoTimes.shift();
+      if (this._tapTempoTimes.length >= 2) {
+        const intervals = [];
+        for (let i = 1; i < this._tapTempoTimes.length; i++) {
+          intervals.push(this._tapTempoTimes[i] - this._tapTempoTimes[i - 1]);
+        }
+        const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+        const tappedBpm = Math.round(60000 / avgInterval);
+        updateBpm(tappedBpm);
+      }
+      // Reset after 2 seconds of no taps
+      clearTimeout(this._tapTempoTimeout);
+      this._tapTempoTimeout = setTimeout(() => { this._tapTempoTimes = []; }, 2000);
+    });
+
+    // Speed Up
+    const speedUpCheck = document.getElementById('pract-speedup-check');
+    const speedUpConfig = document.getElementById('pract-speedup-config');
+    speedUpCheck.addEventListener('change', () => {
+      speedUpConfig.style.display = speedUpCheck.checked ? 'inline-flex' : 'none';
+    });
+
+    // Play / Stop
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        if (this._practiceMetronome) { this._practiceMetronome.stop(); this._practiceMetronome = null; }
+        isPlaying = false;
+        playBtn.textContent = 'Iniciar';
+        playBtn.classList.remove('met-playing');
+        if (this._practiceSpeedUp) { clearInterval(this._practiceSpeedUp); this._practiceSpeedUp = null; }
+        document.querySelectorAll('.met-beat-dot').forEach(d => d.classList.remove('active'));
+        this._stopPracticeTimer();
+      } else {
+        const timeSig = document.getElementById('pract-time-sig').value;
+        const subdiv = parseInt(document.getElementById('pract-subdiv').value);
+        const beats = parseInt(timeSig.split('/')[0]) || 4;
+        this._practiceMetronome = new Metronome();
+        this._practiceMetronome.beatsPerBar = beats * subdiv;
+        this._practiceMetronome.onBeat = (beat) => {
+          document.querySelectorAll('.met-beat-dot').forEach((d, i) => {
+            d.classList.toggle('active', beat >= 0 && Math.floor(beat / subdiv) === i);
+          });
+        };
+        this._practiceMetronome.start(currentBpm * subdiv);
+        isPlaying = true;
+        playBtn.textContent = 'Parar';
+        playBtn.classList.add('met-playing');
+        this._startPracticeTimer();
+
+        // Speed Up mode
+        if (speedUpCheck.checked) {
+          const amount = parseInt(document.getElementById('pract-speedup-amount').value) || 5;
+          const bars = parseInt(document.getElementById('pract-speedup-bars').value) || 8;
+          const maxBpm = parseInt(document.getElementById('pract-speedup-max').value) || 200;
+          let barCount = 0;
+          const barDuration = (60000 / currentBpm) * beats;
+          this._practiceSpeedUp = setInterval(() => {
+            barCount++;
+            if (barCount >= bars && currentBpm < maxBpm) {
+              barCount = 0;
+              updateBpm(Math.min(maxBpm, currentBpm + amount));
+              if (this._practiceMetronome) this._practiceMetronome.bpm = currentBpm * subdiv;
+            }
+          }, barDuration);
+        }
+      }
+    });
+  },
+
+  // ---- PRACTICE: Rudiments ----
+  _renderPracticeRudiments() {
+    const rudiments = this._getRudiments();
+    const progress = this._getPracticeProgress();
+    const categories = [...new Set(rudiments.map(r => r.category))];
+
+    let html = `<div class="practice-rudiments"><input type="text" id="rudiment-search" placeholder="Buscar rudimento..." class="practice-search">`;
+    categories.forEach(cat => {
+      const items = rudiments.filter(r => r.category === cat);
+      html += `<div class="rudiment-category"><div class="rudiment-category-title">${escapeHtml(cat)}</div>`;
+      items.forEach(r => {
+        const prog = progress[r.id] || {};
+        const lastBpm = prog.bestBpm || 0;
+        const lastDate = prog.lastPracticed ? new Date(prog.lastPracticed).toLocaleDateString('pt-BR') : '--';
+        html += `
+          <div class="rudiment-item" data-id="${r.id}">
+            <div class="rudiment-info">
+              <div class="rudiment-name">${escapeHtml(r.name)}</div>
+              <div class="rudiment-pattern">${this._formatRudimentPattern(r.pattern)}</div>
+              <div class="rudiment-meta">Melhor: ${lastBpm || '--'} BPM | Ultimo: ${lastDate}</div>
+            </div>
+            <div class="rudiment-actions">
+              <button class="btn btn-ghost btn-small practice-rudiment-btn" data-id="${r.id}" data-bpm="${r.bpm.beginner}">Praticar</button>
+            </div>
+          </div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+
+    document.getElementById('practice-content').innerHTML = html;
+
+    // Search
+    document.getElementById('rudiment-search').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.rudiment-item').forEach(el => {
+        const r = rudiments.find(x => x.id === el.dataset.id);
+        el.style.display = (!q || r.name.toLowerCase().includes(q) || r.pattern.toLowerCase().includes(q)) ? '' : 'none';
+      });
+      document.querySelectorAll('.rudiment-category').forEach(cat => {
+        const visible = cat.querySelectorAll('.rudiment-item[style=""],.rudiment-item:not([style])');
+        cat.style.display = visible.length > 0 ? '' : 'none';
+      });
+    });
+
+    // Practice button → open metronome with that BPM
+    document.querySelectorAll('.practice-rudiment-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const r = rudiments.find(x => x.id === btn.dataset.id);
+        if (r) {
+          const prog = progress[r.id] || {};
+          const startBpm = prog.bestBpm || r.bpm.beginner;
+          localStorage.setItem('drumcifra_practiceBpm', startBpm);
+          // Save that we're practicing this rudiment
+          localStorage.setItem('drumcifra_currentRudiment', r.id);
+          document.querySelector('.practice-tab[data-tab="metronome"]').click();
+          Storage._showStatus('Praticando: ' + r.name + ' (' + startBpm + ' BPM)', 'info', 3000);
+        }
+      });
+    });
+  },
+
+  // ---- PRACTICE: Dynamics ----
+  _renderPracticeDynamics() {
+    const exercises = [
+      { id: 'crescendo', name: 'Crescendo', desc: 'pp -> mf -> f -> ff', levels: ['pp', 'mf', 'f', 'ff'] },
+      { id: 'decrescendo', name: 'Decrescendo', desc: 'ff -> f -> mf -> pp', levels: ['ff', 'f', 'mf', 'pp'] },
+      { id: 'wave', name: 'Onda', desc: 'pp -> ff -> pp -> ff', levels: ['pp', 'mf', 'ff', 'f', 'mf', 'pp', 'mf', 'ff'] },
+      { id: 'accent-2-4', name: 'Acentos 2 e 4', desc: 'Ghost nos beats 1 e 3, acento nos beats 2 e 4', levels: ['pp', 'ff', 'pp', 'ff'] },
+      { id: 'random', name: 'Aleatorio', desc: 'Dinamica muda aleatoriamente a cada compasso', levels: [] }
+    ];
+
+    let html = `<div class="practice-dynamics">
+      <p class="practice-dynamics-desc">Exercicios de controle de volume e acentuacao. O indicador muda a cada compasso.</p>
+      <div class="dynamics-exercises">`;
+    exercises.forEach(ex => {
+      html += `<div class="dynamics-exercise-item">
+        <div class="dynamics-exercise-info"><div class="dynamics-exercise-name">${escapeHtml(ex.name)}</div><div class="dynamics-exercise-desc">${escapeHtml(ex.desc)}</div></div>
+        <button class="btn btn-ghost btn-small dynamics-start-btn" data-id="${ex.id}">Iniciar</button>
+      </div>`;
+    });
+    html += `</div><div id="dynamics-player" class="dynamics-player hidden">
+      <div class="dynamics-current-level" id="dynamics-level">--</div>
+      <div class="dynamics-bar-indicator" id="dynamics-bar"></div>
+      <div class="dynamics-progress-text" id="dynamics-progress">Compasso 0</div>
+      <button class="btn btn-ghost btn-small" id="dynamics-stop">Parar</button>
+    </div></div>`;
+
+    document.getElementById('practice-content').innerHTML = html;
+
+    document.querySelectorAll('.dynamics-start-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ex = exercises.find(e => e.id === btn.dataset.id);
+        if (!ex) return;
+        this._startDynamicsExercise(ex);
+      });
+    });
+  },
+
+  _startDynamicsExercise(exercise) {
+    const player = document.getElementById('dynamics-player');
+    const levelEl = document.getElementById('dynamics-level');
+    const barEl = document.getElementById('dynamics-bar');
+    const progressEl = document.getElementById('dynamics-progress');
+    player.classList.remove('hidden');
+
+    const dynamicsLevels = ['pp', 'p', 'mp', 'mf', 'f', 'ff'];
+    let levels = exercise.levels.length > 0 ? exercise.levels : null;
+    let currentIdx = 0;
+    let barNum = 0;
+
+    const bpm = parseInt(localStorage.getItem('drumcifra_practiceBpm')) || 100;
+    const timeSig = localStorage.getItem('drumcifra_practiceTimeSig') || '4/4';
+    const beats = parseInt(timeSig.split('/')[0]) || 4;
+    const barDuration = (60000 / bpm) * beats;
+
+    const update = () => {
+      let level;
+      if (levels) {
+        level = levels[currentIdx % levels.length];
+      } else {
+        level = dynamicsLevels[Math.floor(Math.random() * dynamicsLevels.length)];
+      }
+      barNum++;
+      currentIdx++;
+      levelEl.textContent = level;
+      levelEl.className = 'dynamics-current-level dyn-level-' + level;
+      const barHeight = ((dynamicsLevels.indexOf(level) + 1) / dynamicsLevels.length) * 100;
+      barEl.style.height = barHeight + '%';
+      progressEl.textContent = 'Compasso ' + barNum;
+    };
+
+    update();
+    this._dynamicsInterval = setInterval(update, barDuration);
+
+    document.getElementById('dynamics-stop').onclick = () => {
+      clearInterval(this._dynamicsInterval);
+      player.classList.add('hidden');
+    };
+  },
+
+  // ---- PRACTICE: Session Timer ----
+  _startPracticeTimer() {
+    if (this._practiceTimer) return;
+    this._practiceTimer = setInterval(() => {
+      this._practiceTimerSeconds++;
+      const el = document.getElementById('met-session-time');
+      if (el) el.textContent = this._formatTime(this._practiceTimerSeconds);
+    }, 1000);
+  },
+
+  _stopPracticeTimer() {
+    if (this._practiceTimer) {
+      clearInterval(this._practiceTimer);
+      this._practiceTimer = null;
+    }
+    if (this._practiceTimerSeconds > 0) {
+      this._savePracticeTime();
+    }
+  },
+
+  _savePracticeTime() {
+    if (this._practiceTimerSeconds === 0) return;
+    const history = this._getPracticeHistory();
+    const today = new Date().toISOString().slice(0, 10);
+    const idx = history.findIndex(h => h.date === today);
+    if (idx >= 0) { history[idx].seconds += this._practiceTimerSeconds; }
+    else { history.push({ date: today, seconds: this._practiceTimerSeconds }); }
+    // Keep only last 90 days
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 90);
+    const filtered = history.filter(h => new Date(h.date) >= cutoff);
+    this._savePracticeHistory(filtered);
+    this._practiceTimerSeconds = 0;
+  },
+
+  _formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 };
 
