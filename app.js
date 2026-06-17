@@ -358,7 +358,7 @@ const Storage = {
 
   startAutoBackup(minutes) {
     this.stopAutoBackup();
-    this._backupMinutes = minutes || 15;
+    this._backupMinutes = minutes ?? 15;
     this._backupInterval = setInterval(() => this._downloadBackup(), this._backupMinutes * 60 * 1000);
   },
 
@@ -476,8 +476,8 @@ const App = {
     this._bindBackButton();
     this._bindKeyboardShortcuts();
 
-    const backupMin = this.settings.backupMinutes || 15;
-    Storage.startAutoBackup(backupMin);
+    const backupMin = this.settings.backupMinutes ?? 15;
+    if (backupMin > 0) Storage.startAutoBackup(backupMin);
 
     if (localStorage.getItem('drumcifra_fileConnected') && Storage.isFileSystemSupported) {
       Storage._showStatus('Reconecte seu arquivo de dados em Config', 'info');
@@ -1552,7 +1552,7 @@ const App = {
           ${Storage.isConnectedToFile ? `<div class="settings-item" id="disconnect-file-btn" style="cursor:pointer"><div><div class="settings-item-label" style="color:var(--danger)">Desconectar arquivo</div><div class="settings-item-desc">Volta a salvar apenas no navegador</div></div></div>` : ''}
         </div>
         <div class="settings-group"><div class="settings-group-title">Backup Automático</div>
-          <div class="settings-item"><div><div class="settings-item-label">Intervalo de backup</div><div class="settings-item-desc">Baixa um backup automaticamente</div></div><select id="backup-interval-select" style="width:auto;padding:6px 10px;border-radius:var(--radius-sm);background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border)"><option value="0" ${this.settings.backupMinutes===0?'selected':''}>Desligado</option><option value="5" ${this.settings.backupMinutes===5?'selected':''}>5 min</option><option value="15" ${!this.settings.backupMinutes||this.settings.backupMinutes===15?'selected':''}>15 min</option><option value="30" ${this.settings.backupMinutes===30?'selected':''}>30 min</option><option value="60" ${this.settings.backupMinutes===60?'selected':''}>1 hora</option></select></div>
+          <div class="settings-item"><div><div class="settings-item-label">Intervalo de backup</div><div class="settings-item-desc">Baixa um backup automaticamente</div></div><select id="backup-interval-select" style="width:auto;padding:6px 10px;border-radius:var(--radius-sm);background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border)"><option value="0" ${this.settings.backupMinutes===0?'selected':''}>Desligado</option><option value="5" ${this.settings.backupMinutes===5?'selected':''}>5 min</option><option value="15" ${this.settings.backupMinutes===15||this.settings.backupMinutes===undefined?'selected':''}>15 min</option><option value="30" ${this.settings.backupMinutes===30?'selected':''}>30 min</option><option value="60" ${this.settings.backupMinutes===60?'selected':''}>1 hora</option></select></div>
           <div class="settings-item" id="backup-now-btn" style="cursor:pointer"><div><div class="settings-item-label">Fazer backup agora</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
         </div>
         <div class="settings-group"><div class="settings-group-title">Exportar / Importar</div>
