@@ -1079,7 +1079,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
-  font-size: 0.85rem;
+  font-size: calc(var(--viewer-font-size, 16px) * 1.2);
   font-weight: 700;
   color: var(--section-color);
   margin-bottom: var(--space-sm);
@@ -1092,7 +1092,7 @@ textarea {
 }
 
 .viewer-section-tag {
-  font-size: 0.75rem;
+  font-size: calc(var(--viewer-font-size, 16px) * 1.2);
   color: var(--tag-color);
   background: var(--tag-dim);
   padding: 2px 8px;
@@ -1105,10 +1105,11 @@ textarea {
 
 .viewer-tags-row {
   position: relative;
-  height: 22px;
+  height: auto;
+  min-height: 22px;
   white-space: pre;
   font-family: var(--font-mono);
-  font-size: calc(var(--viewer-font-size, 16px) * 0.85);
+  font-size: calc(var(--viewer-font-size, 16px) * 1.2);
   font-weight: 700;
   color: var(--tag-color);
 }
