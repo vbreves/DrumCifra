@@ -37,37 +37,49 @@ const DEFAULT_TAGS = [
 ];
 
 const DEFAULT_SECTIONS = [
-  'Intro', 'Verso', 'Pré-Refrão', 'Refrão', 'Ponte', 'Solo', 'Outro',
-  'Verso 1', 'Verso 2', 'Verso 3',
-  'Refrão 1', 'Refrão 2', 'Refrão 3',
-  'Ponte 1', 'Ponte 2',
-  'Interlúdio', 'Breakdown', 'Build',
-  'Final',
-  'Verse', 'Verse 1', 'Verse 2', 'Verse 3',
-  'Chorus', 'Pre Chorus', 'Post Chorus',
-  'Bridge', 'Tag', 'Refrain', 'Refrain 1', 'Refrain 2',
-  'Interlude', 'Instrumental', 'Ending'
+  'Intro', 'Verso', 'Verso 2', 'Verso 3', 'Verso 4',
+  'Pré-Refrão', 'Pré-Refrão 2', 'Pré-Refrão 3',
+  'Transição', 'Refrão', 'Refrão 2', 'Coro',
+  'Ponte', 'Ponte 2', 'Solo', 'Solo 2',
+  'Especial', 'Climax', 'Interlúdio', 'Interlúdio 2',
+  'Outro', 'Final', 'A Capella'
 ];
+
+// Default section color mapping (category → color)
+// Numbered variants (e.g. "Verso 2") inherit from the base name via _getSectionColorHex
+const DEFAULT_SECTION_COLORS = {
+  'intro': '#5E8BFF',
+  'verso': '#4ECDC4',
+  'pré-refrão': '#FF6B9D',
+  'transição': '#FBBF24',
+  'refrão': '#FF9F0A',
+  'coro': '#FB923C',
+  'ponte': '#A78BFA',
+  'solo': '#F472B6',
+  'especial': '#10B981',
+  'climax': '#EF4444',
+  'interlúdio': '#8B5CF6',
+  'outro': '#6B7280',
+  'final': '#6B7280',
+  'a capella': '#38BDF8'
+};
 
 // Section name patterns for auto-detection
 const SECTION_PATTERNS = [
   /^(intro)$/i,
-  /^(verse|verso)\s*\d*$/i,
-  /^(chorus|refrão|refrao)\s*\d*$/i,
-  /^(pre[- ]?chorus|pré[- ]?refrão|pre[- ]?refrao)\s*\d*$/i,
-  /^(bridge|ponte)\s*\d*$/i,
-  /^(outro|final|ending|coda)$/i,
+  /^(verso)\s*\d*$/i,
+  /^(pré[- ]?refrão)\s*\d*$/i,
+  /^(transição)\s*\d*$/i,
+  /^(refrão)\s*\d*$/i,
+  /^(coro)$/i,
+  /^(ponte)\s*\d*$/i,
   /^(solo)\s*\d*$/i,
-  /^(tag)\s*\d*$/i,
-  /^(post[- ]?chorus|pós[- ]?refrão)\s*\d*$/i,
-  /^(interlude|interlúdio|interludío)\s*\d*$/i,
-  /^(breakdown)\s*\d*$/i,
-  /^(build|building)\s*\d*$/i,
-  /^(refrain|refrão)\s*\d*$/i,
-  /^(hook)\s*\d*$/i,
-  /^(vamp)\s*\d*$/i,
-  /^(instrumental)\s*\d*$/i,
-  /^(ad[- ]?lib)\s*\d*$/i
+  /^(especial)$/i,
+  /^(climax)$/i,
+  /^(interlúdio)\s*\d*$/i,
+  /^(outro)$/i,
+  /^(final)$/i,
+  /^(a capella)$/i
 ];
 
 function isSectionName(line) {
@@ -352,7 +364,7 @@ const Storage = {
         tags: this.getTags(),
         settings: this.getSettings()
       });
-      this._showStatus('☁️ Sincronizado', 'success', 2000);
+      this._showStatus('Sincronizado', 'success', 2000);
     }, 2000);
   },
 
@@ -498,7 +510,7 @@ const App = {
     this.setlists = Storage.getSetlists();
     this.tags = Storage.getTags();
     if (data.settings) this.settings = { ...this.settings, ...data.settings };
-    Storage._showStatus('☁️ Dados recebidos da nuvem', 'success', 3000);
+    Storage._showStatus('Dados recebidos da nuvem', 'success', 3000);
     if (this.currentView === 'song-list') this._renderSongList();
     else if (this.currentView === 'setlist-list') this._renderSetlistList();
     else if (this.currentView === 'settings') this._renderSettings();
@@ -931,11 +943,14 @@ const App = {
               <option value="5/4" ${song.timeSignature === '5/4' ? 'selected' : ''}>5/4</option>
             </select>
           </div>
+          <div class="editor-row">
+            <input type="text" id="edit-ref-link" placeholder="Link de referência (Spotify, YouTube...)" value="${escapeHtml(song.refLink || '')}">
+          </div>
         </div>
         <div id="editor-sections"></div>
         <div style="display:flex;gap:var(--space-sm)">
           <button class="add-section-btn" id="add-section-btn" style="flex:1">+ Adicionar Seção</button>
-          <button class="add-section-btn" id="paste-lyrics-btn" style="flex:1;border-color:var(--accent);color:var(--accent)">📋 Colar Letra Completa</button>
+          <button class="add-section-btn" id="paste-lyrics-btn" style="flex:1;border-color:var(--accent);color:var(--accent)">Colar Letra Completa</button>
         </div>
       </div>
     `;
@@ -943,6 +958,7 @@ const App = {
     document.getElementById('edit-artist').addEventListener('input', (e) => { this.editingSong.artist = e.target.value; });
     document.getElementById('edit-bpm').addEventListener('input', (e) => { this.editingSong.bpm = parseInt(e.target.value) || 0; });
     document.getElementById('edit-time-sig').addEventListener('change', (e) => { this.editingSong.timeSignature = e.target.value; });
+    document.getElementById('edit-ref-link').addEventListener('input', (e) => { this.editingSong.refLink = e.target.value.trim(); });
     document.getElementById('add-section-btn').addEventListener('click', () => {
       this._pushUndo();
       this.editingSong.sections.push(this._createEmptySection());
@@ -980,7 +996,7 @@ const App = {
         </div>` : ''}
         <div class="section-header">
           <select class="section-name-select" data-sidx="${sIdx}">
-            ${DEFAULT_SECTIONS.map(s => `<option value="${s}" ${section.name === s ? 'selected' : ''}>${s}</option>`).join('')}
+            ${[...DEFAULT_SECTIONS].sort((a, b) => a.localeCompare(b, 'pt')).map(s => `<option value="${s}" ${section.name === s ? 'selected' : ''}>${s}</option>`).join('')}
             <option value="__custom" ${!DEFAULT_SECTIONS.includes(section.name) ? 'selected' : ''}>Personalizado...</option>
           </select>
           ${!DEFAULT_SECTIONS.includes(section.name) ? `<input type="text" class="section-custom-name" value="${escapeHtml(section.name)}" placeholder="Nome" style="flex:1;padding:8px;border-radius:var(--radius-sm)">` : ''}
@@ -1303,6 +1319,7 @@ const App = {
           <h1>${escapeHtml(song.title || 'Sem título')}</h1>
           <div class="artist">${escapeHtml(song.artist || '')}</div>
           ${song.bpm ? `<span class="bpm-badge">${song.bpm} BPM · ${timeSig}</span>` : (timeSig !== '4/4' ? `<span class="bpm-badge">${timeSig}</span>` : '')}
+          ${song.refLink ? `<a href="${escapeHtml(song.refLink)}" target="_blank" rel="noopener" class="ref-link-badge">▶ Ouvir Referência</a>` : ''}
         </div>
         <div id="viewer-sections"></div>
       </div>
@@ -1321,12 +1338,15 @@ const App = {
         <button class="viewer-ctrl-btn" id="viewer-metronome" title="Metrônomo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5L7.5 21h9L12 1.5zM11 14V8h2v6h-2zm0 4v-2h2v2h-2z"/></svg></button>
         <button class="viewer-ctrl-btn" id="viewer-scroll" title="Auto-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></button>
         <button class="viewer-ctrl-btn" id="viewer-section-nav" title="Navegar por seção"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="4" rx="1"/><rect x="4" y="10" width="16" height="4" rx="1"/><rect x="4" y="16" width="16" height="4" rx="1"/></svg></button>
+        <button class="viewer-ctrl-btn" id="viewer-print" title="Imprimir / PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+        ${song.refLink ? `<button class="viewer-ctrl-btn" id="viewer-ref-link" title="Ouvir referência"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>` : ''}
         <button class="viewer-ctrl-btn" id="viewer-edit" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
       </div>
       <div class="scroll-speed-control hidden" id="scroll-speed-control"><span class="speed-label">Rápido</span><input type="range" min="1" max="10" value="${this.scrollSpeed}" id="scroll-speed-slider"><span class="speed-label">Lento</span></div>
     `;
 
     const sectionsEl = document.getElementById('viewer-sections');
+    const sectionColors = this._getSectionColors();
     song.sections.forEach((section, secIdx) => {
       // Transition marker between sections
       if (secIdx > 0 && section.transition) {
@@ -1337,10 +1357,13 @@ const App = {
       }
 
       const div = document.createElement('div'); div.className = 'viewer-section';
+      const sectionColor = this._getSectionColorHex(section.name, sectionColors);
+      div.style.border = `1px solid ${sectionColor}40`;
+      div.style.borderLeft = `3px solid ${sectionColor}`;
       const sTags = Array.isArray(section.tags) ? section.tags : (section.tag ? [section.tag] : []);
       const dynClass = section.dynamics ? ' dyn-' + section.dynamics : '';
 
-      let nh = `<div class="viewer-section-name${dynClass}">${escapeHtml(section.name)}`;
+      let nh = `<div class="viewer-section-name${dynClass}" style="color:${sectionColor}">${escapeHtml(section.name)}`;
       if (section.dynamics) nh += ` <span class="viewer-dynamics-badge">${section.dynamics}</span>`;
       if (section.repeat && section.repeat > 1) nh += ` <span class="viewer-repeat-badge">×${section.repeat}</span>`;
       sTags.forEach(t => { nh += ` <span class="viewer-section-tag">${escapeHtml(t)}</span>`; });
@@ -1391,6 +1414,14 @@ const App = {
     });
     document.getElementById('scroll-speed-slider').addEventListener('input', (e) => { this.scrollSpeed = parseInt(e.target.value); });
 
+    // Print button
+    document.getElementById('viewer-print').addEventListener('click', () => { window.print(); });
+
+    // Reference link button
+    if (song.refLink) {
+      document.getElementById('viewer-ref-link')?.addEventListener('click', () => { window.open(song.refLink, '_blank', 'noopener'); });
+    }
+
     // Feature 7: Zoom font
     document.getElementById('viewer-zoom-in').addEventListener('click', () => {
       this.viewerFontSize = Math.min(32, this.viewerFontSize + 2);
@@ -1427,11 +1458,90 @@ const App = {
       document.getElementById('viewer-controls')?.classList.remove('faded');
       clearTimeout(fadeTimer); fadeTimer = setTimeout(() => document.getElementById('viewer-controls')?.classList.add('faded'), 3000);
     }, { passive: true });
+
+    // Swipe gesture navigation (mobile)
+    this._initSwipeGesture(document.getElementById('viewer-scroll-area'), sectionEls, sectionNames);
+  },
+
+  _initSwipeGesture(container, sectionEls, sectionNames) {
+    if (!container) return;
+    let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+    const MIN_SWIPE_DIST = 60;
+    const MAX_SWIPE_TIME = 400;
+    const MAX_VERT_RATIO = 1.5; // allow some vertical movement
+
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+      if (e.changedTouches.length !== 1) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      const elapsed = Date.now() - touchStartTime;
+      if (elapsed > MAX_SWIPE_TIME) return;
+      if (Math.abs(dx) < MIN_SWIPE_DIST) return;
+      if (Math.abs(dy) > Math.abs(dx) * MAX_VERT_RATIO) return;
+
+      // Horizontal swipe detected
+      if (dx < 0) {
+        // Swipe left → next section
+        if (this.currentSectionIdx < sectionNames.length - 1) {
+          this.currentSectionIdx++;
+          this._updateSectionNav(sectionEls, sectionNames);
+          sectionEls[this.currentSectionIdx]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          this._showSwipeIndicator('next');
+        }
+      } else {
+        // Swipe right → previous section
+        if (this.currentSectionIdx > 0) {
+          this.currentSectionIdx--;
+          this._updateSectionNav(sectionEls, sectionNames);
+          sectionEls[this.currentSectionIdx]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          this._showSwipeIndicator('prev');
+        }
+      }
+    }, { passive: true });
+  },
+
+  _showSwipeIndicator(direction) {
+    const existing = document.querySelector('.swipe-indicator');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'swipe-indicator ' + direction;
+    el.textContent = direction === 'next' ? '→' : '←';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 600);
   },
 
   _exitViewer() { document.body.classList.remove('viewer-mode'); this.metronome.stop(); this._stopAutoScroll(); },
   _startAutoScroll() { this.isAutoScrolling = true; const s = () => { if (!this.isAutoScrolling) return; window.scrollBy(0, this.scrollSpeed * 0.5); this.scrollInterval = requestAnimationFrame(s); }; s(); },
   _stopAutoScroll() { this.isAutoScrolling = false; if (this.scrollInterval) { cancelAnimationFrame(this.scrollInterval); this.scrollInterval = null; } },
+
+  // Section color helpers
+  _getSectionColors() {
+    return this.settings.sectionColors || { ...DEFAULT_SECTION_COLORS };
+  },
+
+  _getSectionColorHex(sectionName, colors) {
+    if (!colors) colors = this._getSectionColors();
+    const lower = (sectionName || '').toLowerCase();
+    // Direct match
+    if (colors[lower]) return colors[lower];
+    // Numbered section match (e.g. "Verso 2" → "verso")
+    const base = lower.replace(/\s*\d+$/, '').trim();
+    if (colors[base]) return colors[base];
+    // Default fallback
+    return '#6B7280';
+  },
+
+  _saveSectionColors(colors) {
+    this.settings.sectionColors = colors;
+    Storage.saveSettings(this.settings);
+  },
 
   _updateSectionNav(sectionEls, sectionNames) {
     const prev = document.getElementById('section-nav-prev');
@@ -1484,8 +1594,9 @@ const App = {
     const sl = this.setlists.find(s => s.id === params?.setlistId);
     if (!sl) return this.navigate('setlist-list');
     this.currentSetlistId = sl.id;
-    document.getElementById('topbar-actions').innerHTML = `<button id="play-setlist-top" class="icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>`;
+    document.getElementById('topbar-actions').innerHTML = `<button id="print-setlist-top" class="icon-btn" title="Imprimir Setlist"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button><button id="play-setlist-top" class="icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>`;
     document.getElementById('play-setlist-top').addEventListener('click', () => this._pushView('setlist-player', { setlistId: sl.id, index: 0 }));
+    document.getElementById('print-setlist-top').addEventListener('click', () => this._printSetlist(sl));
     document.getElementById('app').innerHTML = `<div class="view"><div class="setlist-header"><input type="text" id="setlist-name" placeholder="Nome da setlist" value="${escapeHtml(sl.name)}"></div><div id="setlist-songs" class="list"></div><button class="add-section-btn mt-md" id="add-to-setlist">+ Adicionar Música</button></div>`;
     document.getElementById('setlist-name').addEventListener('input', (e) => { sl.name = e.target.value; Storage.saveSetlists(this.setlists); });
     document.getElementById('add-to-setlist').addEventListener('click', () => this._openSongPicker((id) => { sl.songIds.push(id); Storage.saveSetlists(this.setlists); this._renderSetlistSongs(sl); }));
@@ -1524,6 +1635,86 @@ const App = {
       if (idx < sl.songIds.length - 1) { const nb = document.createElement('button'); nb.className = 'viewer-ctrl-btn'; nb.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`; nb.addEventListener('click', () => { this._exitViewer(); this.navigate('setlist-player', { setlistId: sl.id, index: idx + 1 }); }); nd.appendChild(nb); }
       controls.appendChild(nd);
     }
+    // Swipe left/right to navigate between setlist songs
+    this._initSetlistSwipe(sl, idx);
+  },
+
+  _initSetlistSwipe(sl, idx) {
+    const container = document.getElementById('viewer-scroll-area');
+    if (!container) return;
+    let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+    const MIN_SWIPE = 80, MAX_TIME = 400;
+
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+      if (e.changedTouches.length !== 1) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Date.now() - touchStartTime > MAX_TIME) return;
+      if (Math.abs(dx) < MIN_SWIPE) return;
+      if (Math.abs(dy) > Math.abs(dx)) return;
+
+      if (dx < 0 && idx < sl.songIds.length - 1) {
+        this._exitViewer(); this.navigate('setlist-player', { setlistId: sl.id, index: idx + 1 });
+      } else if (dx > 0 && idx > 0) {
+        this._exitViewer(); this.navigate('setlist-player', { setlistId: sl.id, index: idx - 1 });
+      }
+    }, { passive: true });
+  },
+
+  _printSetlist(sl) {
+    const songs = sl.songIds.map(id => this.songs.find(s => s.id === id)).filter(Boolean);
+    const sectionColors = this._getSectionColors();
+    let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHtml(sl.name || 'Setlist')}</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 10mm; color: #000; font-size: 10pt; }
+        .setlist-title { text-align: center; font-size: 16pt; font-weight: 700; margin-bottom: 6mm; border-bottom: 1px solid #ccc; padding-bottom: 3mm; }
+        .song-block { page-break-inside: avoid; margin-bottom: 6mm; }
+        .song-title { font-size: 12pt; font-weight: 700; margin-bottom: 1mm; }
+        .song-artist { font-size: 9pt; color: #555; margin-bottom: 2mm; }
+        .song-meta { font-size: 8pt; color: #666; margin-bottom: 2mm; }
+        .section { margin-bottom: 3mm; padding: 2mm 3mm; border: 1px solid #ddd; border-radius: 2mm; border-left: 3px solid #ddd; }
+        .section-name { font-size: 9pt; font-weight: 700; text-transform: uppercase; margin-bottom: 1mm; font-family: monospace; }
+        .section-tag { font-size: 8pt; color: #555; background: #f0f0f0; padding: 0 3px; border-radius: 2px; }
+        .lyrics { font-family: monospace; font-size: 9pt; line-height: 1.4; }
+        .tag-line { font-family: monospace; font-size: 8pt; font-weight: 700; color: #333; }
+        .transition { text-align: center; font-size: 7pt; color: #666; font-family: monospace; text-transform: uppercase; margin: 1mm 0; }
+      </style></head><body>
+      <div class="setlist-title">${escapeHtml(sl.name || 'Setlist')}</div>`;
+    songs.forEach((song, i) => {
+      html += `<div class="song-block"><div class="song-title">${i + 1}. ${escapeHtml(song.title || 'Sem título')}</div>`;
+      html += `<div class="song-artist">${escapeHtml(song.artist || '')}</div>`;
+      if (song.bpm) html += `<div class="song-meta">${song.bpm} BPM · ${song.timeSignature || '4/4'}</div>`;
+      song.sections.forEach((sec, secIdx) => {
+        if (secIdx > 0 && sec.transition) html += `<div class="transition">— ${escapeHtml(sec.transition)} —</div>`;
+        const color = this._getSectionColorHex(sec.name, sectionColors);
+        html += `<div class="section" style="border-left-color:${color}"><div class="section-name" style="color:${color}">${escapeHtml(sec.name)}`;
+        if (sec.dynamics) html += ` <span style="font-style:italic">${sec.dynamics}</span>`;
+        if (sec.repeat && sec.repeat > 1) html += ` ×${sec.repeat}`;
+        const sTags = Array.isArray(sec.tags) ? sec.tags : [];
+        sTags.forEach(t => { html += ` <span class="section-tag">${escapeHtml(t)}</span>`; });
+        html += `</div>`;
+        if (sec.notes) html += `<div style="font-size:7pt;font-style:italic;color:#666">${escapeHtml(sec.notes)}</div>`;
+        (sec.lines || []).forEach(line => {
+          if (line.tags && line.tags.length > 0) html += `<div class="tag-line">${line.tags.map(t => escapeHtml(t.name)).join('  ')}</div>`;
+          if (line.lyrics.trim()) html += `<div class="lyrics">${escapeHtml(line.lyrics)}</div>`;
+        });
+        html += `</div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</body></html>`;
+    const printWin = window.open('', '_blank');
+    printWin.document.write(html);
+    printWin.document.close();
+    printWin.focus();
+    setTimeout(() => printWin.print(), 300);
   },
 
   // =============================================
@@ -1533,7 +1724,7 @@ const App = {
     document.getElementById('app').innerHTML = `
       <div class="view">
         <div class="settings-group"><div class="settings-group-title">Tags de Bateria</div><div class="settings-tags-list" id="tags-list"></div><div class="add-tag-row"><input type="text" id="new-tag-input" placeholder="Nome da nova tag..." style="text-transform:uppercase"><button class="btn btn-primary btn-small" id="add-tag-btn">Adicionar</button></div></div>
-        <div class="settings-group"><div class="settings-group-title">☁️ Sincronização na Nuvem</div>
+        <div class="settings-group"><div class="settings-group-title">Sincronização na Nuvem</div>
           ${!CloudSync.isAvailable ? `<div class="settings-item"><div><div class="settings-item-label" style="color:var(--danger)">Firebase não configurado</div><div class="settings-item-desc">Configure o arquivo firebase-config.js para ativar a sincronização.</div></div></div>` :
           CloudSync.isConnected ? `
             <div class="settings-item"><div><div class="settings-item-label" style="color:var(--success)">✓ Conectado</div><div class="settings-item-desc">Código: <strong>${escapeHtml(CloudSync.syncCode)}</strong> — Use este mesmo código em outros dispositivos.</div></div></div>
@@ -1546,7 +1737,7 @@ const App = {
           `}
         </div>
         <div class="settings-group"><div class="settings-group-title">Armazenamento em Arquivo</div>
-          <div class="settings-item"><div><div class="settings-item-label">${Storage.isConnectedToFile ? '📁 Conectado: ' + escapeHtml(Storage.connectedFileName) : '📁 Nenhum arquivo conectado'}</div><div class="settings-item-desc">Salva automaticamente num arquivo .json no seu PC.</div></div></div>
+          <div class="settings-item"><div><div class="settings-item-label">${Storage.isConnectedToFile ? 'Conectado: ' + escapeHtml(Storage.connectedFileName) : 'Nenhum arquivo conectado'}</div><div class="settings-item-desc">Salva automaticamente num arquivo .json no seu PC.</div></div></div>
           <div class="settings-item" id="connect-file-btn" style="cursor:pointer"><div><div class="settings-item-label">${Storage.isConnectedToFile ? 'Trocar arquivo' : 'Escolher arquivo para salvar'}</div><div class="settings-item-desc">Cria ou escolhe um .json no seu computador</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           <div class="settings-item" id="open-file-btn" style="cursor:pointer"><div><div class="settings-item-label">Abrir arquivo existente</div><div class="settings-item-desc">Carrega dados de um .json já salvo</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
           ${Storage.isConnectedToFile ? `<div class="settings-item" id="disconnect-file-btn" style="cursor:pointer"><div><div class="settings-item-label" style="color:var(--danger)">Desconectar arquivo</div><div class="settings-item-desc">Volta a salvar apenas no navegador</div></div></div>` : ''}
@@ -1559,15 +1750,17 @@ const App = {
           <div class="settings-item" id="export-btn" style="cursor:pointer"><div><div class="settings-item-label">Exportar tudo</div><div class="settings-item-desc">Salvar como JSON</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
           <div class="settings-item" id="import-btn" style="cursor:pointer"><div><div class="settings-item-label">Importar dados</div><div class="settings-item-desc">Restaurar de um backup</div></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
         </div>
+        <div class="settings-group"><div class="settings-group-title">Cores das Seções</div><div class="settings-item"><div class="settings-item-desc" style="width:100%">Defina cores para cada tipo de seção. As cores são usadas no viewer para identificar visualmente cada parte.</div></div><div id="section-colors-list" class="section-colors-grid"></div><div class="settings-item" id="reset-colors-btn" style="cursor:pointer;margin-top:2px"><div><div class="settings-item-label" style="color:var(--danger)">Restaurar cores padrão</div></div></div></div>
         <div class="settings-group"><div class="settings-group-title">Estatísticas</div>
           <div class="settings-item"><span class="settings-item-label">Músicas</span><span class="text-accent" style="font-weight:700;font-family:var(--font-mono)">${this.songs.length}</span></div>
           <div class="settings-item"><span class="settings-item-label">Setlists</span><span class="text-accent" style="font-weight:700;font-family:var(--font-mono)">${this.setlists.length}</span></div>
           <div class="settings-item"><span class="settings-item-label">Tags</span><span class="text-accent" style="font-weight:700;font-family:var(--font-mono)">${this.tags.length}</span></div>
         </div>
-        <div class="settings-group"><div class="settings-group-title">Sobre</div><div class="settings-item"><div><div class="settings-item-label">DrumCifra</div><div class="settings-item-desc">Cifras de bateria simplificadas. v1.2 — Cloud Sync</div></div></div></div>
+        <div class="settings-group"><div class="settings-group-title">Sobre</div><div class="settings-item"><div><div class="settings-item-label">DrumCifra</div><div class="settings-item-desc">Cifras de bateria simplificadas. v1.3 — Section Colors, Print, Swipe</div></div></div></div>
       </div>
     `;
     this._renderTagsList();
+    this._renderSectionColorsList();
     const ati = document.getElementById('new-tag-input');
     document.getElementById('add-tag-btn').addEventListener('click', () => { const n = ati.value.trim().toUpperCase(); if (n && !this.tags.includes(n)) { this.tags.push(n); Storage.saveTags(this.tags); ati.value = ''; this._renderTagsList(); } });
     ati.addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('add-tag-btn').click(); });
@@ -1576,7 +1769,7 @@ const App = {
       const code = document.getElementById('sync-code-input')?.value;
       if (CloudSync.connect(code, (data) => this._onCloudData(data))) {
         CloudSync.pushData({ songs: this.songs, setlists: this.setlists, tags: this.tags, settings: this.settings });
-        Storage._showStatus('☁️ Conectado e dados enviados!', 'success', 3000);
+        Storage._showStatus('Conectado e dados enviados!', 'success', 3000);
         this._renderSettings();
       } else { alert('Código inválido. Use pelo menos 3 caracteres.'); }
     });
@@ -1584,18 +1777,18 @@ const App = {
       const code = document.getElementById('sync-code-input')?.value;
       if (CloudSync.connect(code, (data) => this._onCloudData(data))) {
         const data = await CloudSync.pullData();
-        if (data && data.songs) { this._onCloudData(data); Storage._showStatus('☁️ Dados baixados da nuvem!', 'success', 3000); }
-        else { Storage._showStatus('☁️ Conectado (nenhum dado na nuvem ainda)', 'info', 3000); }
+        if (data && data.songs) { this._onCloudData(data); Storage._showStatus('Dados baixados da nuvem!', 'success', 3000); }
+        else { Storage._showStatus('Conectado (nenhum dado na nuvem ainda)', 'info', 3000); }
         this._renderSettings();
       } else { alert('Código inválido. Use pelo menos 3 caracteres.'); }
     });
     document.getElementById('cloud-push-btn')?.addEventListener('click', async () => {
       await CloudSync.pushData({ songs: this.songs, setlists: this.setlists, tags: this.tags, settings: this.settings });
-      Storage._showStatus('☁️ Dados enviados!', 'success', 3000);
+      Storage._showStatus('Dados enviados!', 'success', 3000);
     });
     document.getElementById('cloud-pull-btn')?.addEventListener('click', async () => {
       const data = await CloudSync.pullData();
-      if (data && data.songs) { this._onCloudData(data); Storage._showStatus('☁️ Dados baixados!', 'success', 3000); this._renderSettings(); }
+      if (data && data.songs) { this._onCloudData(data); Storage._showStatus('Dados baixados!', 'success', 3000); this._renderSettings(); }
       else { Storage._showStatus('Nenhum dado encontrado na nuvem', 'info', 3000); }
     });
     document.getElementById('cloud-disconnect-btn')?.addEventListener('click', () => { CloudSync.disconnect(); Storage._showStatus('Desconectado da nuvem', 'info', 3000); this._renderSettings(); });
@@ -1613,8 +1806,32 @@ const App = {
 
   _renderTagsList() {
     const c = document.getElementById('tags-list'); if (!c) return;
-    c.innerHTML = this.tags.map((tag, idx) => `<span class="settings-tag ${DEFAULT_TAGS.includes(tag) ? 'is-default' : ''}">${escapeHtml(tag)}<button class="remove-btn" data-idx="${idx}">&times;</button></span>`).join('');
+    const sortedTags = this.tags.slice().sort((a, b) => a.localeCompare(b, 'pt'));
+    c.innerHTML = sortedTags.map((tag) => { const idx = this.tags.indexOf(tag); return `<span class="settings-tag ${DEFAULT_TAGS.includes(tag) ? 'is-default' : ''}">${escapeHtml(tag)}<button class="remove-btn" data-idx="${idx}">&times;</button></span>`; }).join('');
     c.querySelectorAll('.remove-btn').forEach(b => b.addEventListener('click', () => { this.tags.splice(parseInt(b.dataset.idx), 1); Storage.saveTags(this.tags); this._renderTagsList(); }));
+  },
+
+  _renderSectionColorsList() {
+    const c = document.getElementById('section-colors-list'); if (!c) return;
+    const colors = this._getSectionColors();
+    const uniqueKeys = Object.keys(DEFAULT_SECTION_COLORS).sort((a, b) => a.localeCompare(b, 'pt'));
+    c.innerHTML = uniqueKeys.map(key => {
+      const color = colors[key] || DEFAULT_SECTION_COLORS[key] || '#6B7280';
+      return `<div class="section-color-item"><input type="color" class="section-color-picker" data-key="${key}" value="${color}"><span class="section-color-label">${escapeHtml(key)}</span></div>`;
+    }).join('');
+    c.querySelectorAll('.section-color-picker').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const key = e.target.dataset.key;
+        const currentColors = this._getSectionColors();
+        currentColors[key] = e.target.value;
+        this._saveSectionColors(currentColors);
+      });
+    });
+    document.getElementById('reset-colors-btn')?.addEventListener('click', () => {
+      this._saveSectionColors({ ...DEFAULT_SECTION_COLORS });
+      this._renderSectionColorsList();
+      Storage._showStatus('Cores restauradas!', 'success', 2000);
+    });
   },
 
   // =============================================
@@ -1630,7 +1847,7 @@ const App = {
 
   _renderTagGrid(query) {
     const g = document.getElementById('tag-grid'); const q = query.toLowerCase().trim();
-    const f = q ? this.tags.filter(t => t.toLowerCase().includes(q)) : this.tags;
+    const f = (q ? this.tags.filter(t => t.toLowerCase().includes(q)) : this.tags).slice().sort((a, b) => a.localeCompare(b, 'pt'));
     let h = f.map(t => `<button class="tag-option" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join('');
     if (q && !this.tags.some(t => t.toLowerCase() === q)) h += `<button class="tag-option" data-tag="${escapeHtml(q.toUpperCase())}" style="border-color:var(--accent);color:var(--accent)">+ ${escapeHtml(q.toUpperCase())}</button>`;
     g.innerHTML = h;

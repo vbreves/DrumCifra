@@ -1072,7 +1072,12 @@ textarea {
 }
 
 .viewer-section {
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  border-left: 3px solid transparent;
+  transition: border-color 0.2s;
 }
 
 .viewer-section-name {
@@ -1084,7 +1089,7 @@ textarea {
   color: var(--section-color);
   margin-bottom: var(--space-sm);
   padding: 4px 12px;
-  background: var(--section-dim);
+  background: transparent;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
@@ -1296,6 +1301,37 @@ textarea {
 .beat-dot.active {
   background: var(--accent);
   box-shadow: 0 0 8px var(--accent);
+}
+
+/* Swipe indicator */
+.swipe-indicator {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  z-index: 999;
+  animation: swipeFade 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+.swipe-indicator.next {
+  right: var(--space-lg);
+}
+
+.swipe-indicator.prev {
+  left: var(--space-lg);
+}
+
+@keyframes swipeFade {
+  0% { opacity: 1; transform: translateY(-50%) scale(1); }
+  100% { opacity: 0; transform: translateY(-50%) scale(0.8); }
 }
 
 /* =============================================
@@ -1542,6 +1578,75 @@ textarea {
 .flex-center { display: flex; align-items: center; justify-content: center; }
 .gap-sm { gap: var(--space-sm); }
 
+/* Reference link badge */
+.ref-link-badge {
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: 6px 14px;
+  background: rgba(30, 215, 96, 0.15);
+  color: #1ED760;
+  border: 1px solid rgba(30, 215, 96, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.ref-link-badge:hover {
+  background: rgba(30, 215, 96, 0.25);
+  transform: scale(1.02);
+}
+
+/* Section Colors Grid (Settings) */
+.section-colors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 2px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+}
+
+.section-color-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.section-color-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.section-color-picker {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+  background: transparent !important;
+}
+
+.section-color-picker::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.section-color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
+.section-color-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: capitalize;
+  color: var(--text-secondary);
+}
+
 /* =============================================
    SAVE STATUS INDICATOR
    ============================================= */
@@ -1596,21 +1701,130 @@ textarea {
    PRINT (for export)
    ============================================= */
 @media print {
-  #topbar, #bottom-nav, .viewer-controls, .viewer-close-btn, .fab {
-    display: none !important;
+  /* Hide all UI controls */
+  #topbar, #bottom-nav, .viewer-controls, .viewer-close-btn, .fab,
+  .metronome-indicator, .section-nav, .scroll-speed-control,
+  .search-bar, .sort-toolbar, #add-song-fab, .modal,
+  .save-status, .ref-link-badge { display: none !important; }
+
+  /* Reset backgrounds to white */
+  body, html {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
-  
-  body {
-    background: #fff;
-    color: #000;
+
+  #app {
+    padding: 0 !important;
   }
-  
-  .viewer-tags-row, .tags-row {
-    color: #333;
+
+  .viewer-container {
+    padding: 10mm !important;
+    max-width: none !important;
+    min-height: auto !important;
   }
-  
+
+  .viewer-song-header {
+    text-align: center;
+    margin-bottom: 4mm !important;
+    padding-bottom: 3mm !important;
+    border-bottom: 1px solid #ccc !important;
+  }
+
+  .viewer-song-header h1 {
+    font-size: 16pt !important;
+    color: #000 !important;
+  }
+
+  .viewer-song-header .artist {
+    font-size: 10pt !important;
+    color: #333 !important;
+  }
+
+  .viewer-song-header .bpm-badge {
+    background: none !important;
+    color: #333 !important;
+    border: 1px solid #999 !important;
+    padding: 1px 6px !important;
+    font-size: 8pt !important;
+  }
+
+  .viewer-section {
+    margin-bottom: 4mm !important;
+    page-break-inside: avoid;
+    border: 1px solid #ddd !important;
+    border-radius: 2mm !important;
+    padding: 2mm 3mm !important;
+  }
+
   .viewer-section-name {
-    color: #333;
-    background: #eee;
+    font-size: 9pt !important;
+    color: #000 !important;
+    background: #f0f0f0 !important;
+    padding: 1px 6px !important;
+    border-radius: 2px !important;
+    margin-bottom: 2mm !important;
+  }
+
+  .viewer-section-tag {
+    font-size: 8pt !important;
+    color: #555 !important;
+    background: #eee !important;
+    padding: 0 4px !important;
+  }
+
+  .viewer-dynamics-badge {
+    color: #000 !important;
+    background: #ddd !important;
+  }
+
+  .viewer-repeat-badge {
+    color: #000 !important;
+    background: #eee !important;
+  }
+
+  .viewer-section-notes {
+    font-size: 8pt !important;
+    color: #555 !important;
+  }
+
+  .viewer-transition {
+    color: #666 !important;
+    font-size: 7pt !important;
+    margin: 1mm 0 !important;
+  }
+
+  .viewer-transition::before,
+  .viewer-transition::after {
+    background: #ccc !important;
+  }
+
+  .viewer-tags-row, .viewer-tags-row span {
+    color: #333 !important;
+    font-size: 8pt !important;
+  }
+
+  .viewer-lyrics-row {
+    font-size: 10pt !important;
+    color: #000 !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Two columns for print */
+  .viewer-container.two-columns #viewer-sections {
+    column-count: 2 !important;
+    column-gap: 6mm !important;
+    column-rule: 1px solid #ddd !important;
+  }
+
+  /* Setlist print */
+  .setlist-print-header {
+    text-align: center;
+    font-size: 14pt;
+    font-weight: 700;
+    margin-bottom: 4mm;
+    padding-bottom: 2mm;
+    border-bottom: 1px solid #ccc;
   }
 }
