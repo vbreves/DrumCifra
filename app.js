@@ -478,6 +478,8 @@ const App = {
   sortBy: 'title', sortDir: 'asc', groupBy: 'none',
   tagPickerCallback: null,
   undoStack: [], redoStack: [], maxUndoSteps: 50,
+  _editorAutoSaveInterval: null,
+  _editorAutoSaveTimeout: null,
 
   init() {
     this.songs = Storage.getSongs();
@@ -525,6 +527,7 @@ const App = {
 
   // ---- Navigation ----
   navigate(view, params) {
+    if (this.currentView === 'song-editor' && view !== 'song-editor') this._stopEditorAutoSave();
     if (this.currentView === 'song-viewer') this._exitViewer();
     this.currentView = view;
     const title = document.getElementById('topbar-title');
@@ -915,16 +918,17 @@ const App = {
     this.editingSongSnapshot = JSON.stringify(this.editingSong);
     this.undoStack = [];
     this.redoStack = [];
+    this._startEditorAutoSave();
 
     const actions = document.getElementById('topbar-actions');
     actions.innerHTML = `
-      <button id="undo-btn" class="icon-btn" aria-label="Desfazer" title="Desfazer (Ctrl+Z)" disabled style="opacity:0.3">
+      <button type="button" id="undo-btn" class="icon-btn" aria-label="Desfazer" title="Desfazer (Ctrl+Z)" disabled style="opacity:0.3">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
       </button>
-      <button id="redo-btn" class="icon-btn" aria-label="Refazer" title="Refazer (Ctrl+Y)" disabled style="opacity:0.3">
+      <button type="button" id="redo-btn" class="icon-btn" aria-label="Refazer" title="Refazer (Ctrl+Y)" disabled style="opacity:0.3">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg>
       </button>
-      <button id="save-song-btn" class="btn btn-primary btn-small">Salvar</button>
+      <button type="button" id="save-song-btn" class="btn btn-primary btn-small">Salvar</button>
     `;
     document.getElementById('save-song-btn').addEventListener('click', () => { this._saveSong(); this.viewStack.pop(); this.navigate('song-list'); });
     document.getElementById('undo-btn').addEventListener('click', () => this._undo());
@@ -935,6 +939,7 @@ const App = {
   _rebuildEditor() {
     const song = this.editingSong;
     if (!song) return;
+    const prevScrollY = window.scrollY;
     document.getElementById('app').innerHTML = `
       <div class="view">
         <div class="editor-header">
@@ -957,16 +962,16 @@ const App = {
         </div>
         <div id="editor-sections"></div>
         <div style="display:flex;gap:var(--space-sm)">
-          <button class="add-section-btn" id="add-section-btn" style="flex:1">+ Adicionar Seção</button>
-          <button class="add-section-btn" id="paste-lyrics-btn" style="flex:1;border-color:var(--accent);color:var(--accent)">Colar Letra Completa</button>
+          <button type="button" class="add-section-btn" id="add-section-btn" style="flex:1">+ Adicionar Seção</button>
+          <button type="button" class="add-section-btn" id="paste-lyrics-btn" style="flex:1;border-color:var(--accent);color:var(--accent)">Colar Letra Completa</button>
         </div>
       </div>
     `;
-    document.getElementById('edit-title').addEventListener('input', (e) => { this.editingSong.title = e.target.value; });
-    document.getElementById('edit-artist').addEventListener('input', (e) => { this.editingSong.artist = e.target.value; });
-    document.getElementById('edit-bpm').addEventListener('input', (e) => { this.editingSong.bpm = parseInt(e.target.value) || 0; });
-    document.getElementById('edit-time-sig').addEventListener('change', (e) => { this.editingSong.timeSignature = e.target.value; });
-    document.getElementById('edit-ref-link').addEventListener('input', (e) => { this.editingSong.refLink = e.target.value.trim(); });
+    document.getElementById('edit-title').addEventListener('input', (e) => { this.editingSong.title = e.target.value; this._queueEditorAutoSave(); });
+    document.getElementById('edit-artist').addEventListener('input', (e) => { this.editingSong.artist = e.target.value; this._queueEditorAutoSave(); });
+    document.getElementById('edit-bpm').addEventListener('input', (e) => { this.editingSong.bpm = parseInt(e.target.value) || 0; this._queueEditorAutoSave(); });
+    document.getElementById('edit-time-sig').addEventListener('change', (e) => { this.editingSong.timeSignature = e.target.value; this._queueEditorAutoSave(); });
+    document.getElementById('edit-ref-link').addEventListener('input', (e) => { this.editingSong.refLink = e.target.value.trim(); this._queueEditorAutoSave(); });
     document.getElementById('add-section-btn').addEventListener('click', () => {
       this._pushUndo();
       this.editingSong.sections.push(this._createEmptySection());
@@ -974,11 +979,15 @@ const App = {
     });
     document.getElementById('paste-lyrics-btn').addEventListener('click', () => this._openPasteLyricsModal());
     this._renderEditorSections();
+    requestAnimationFrame(() => {
+      window.scrollTo(0, Math.min(prevScrollY, document.documentElement.scrollHeight));
+    });
   },
 
   _renderEditorSections() {
     const container = document.getElementById('editor-sections');
     if (!container) return;
+    const prevScrollY = window.scrollY;
     const song = this.editingSong;
     container.innerHTML = '';
 
@@ -1017,16 +1026,16 @@ const App = {
             <option value="3" ${section.repeat === 3 ? 'selected' : ''}>×3</option>
             <option value="4" ${section.repeat === 4 ? 'selected' : ''}>×4</option>
           </select>
-          <div class="section-tag-input">${tagsHtml}<button class="add-section-tag-btn" data-sidx="${sIdx}">+ Tag</button></div>
-          <button class="icon-btn remove-section-btn" data-sidx="${sIdx}" style="color:var(--danger)">&times;</button>
+          <div class="section-tag-input">${tagsHtml}<button type="button" class="add-section-tag-btn" data-sidx="${sIdx}">+ Tag</button></div>
+          <button type="button" class="icon-btn remove-section-btn" data-sidx="${sIdx}" style="color:var(--danger)">&times;</button>
         </div>
         <div class="section-meta-row">
           <input type="text" class="section-notes-input" data-sidx="${sIdx}" placeholder="Notas / observações..." value="${escapeHtml(section.notes || '')}">
         </div>
         <div class="section-body" data-sidx="${sIdx}">
           ${showLines
-            ? `${(section.lines || []).map((line, lIdx) => this._renderLineEditor(sIdx, lIdx, line)).join('')}<button class="add-line-btn" data-sidx="${sIdx}">+ Adicionar linha</button>`
-            : `<div class="section-empty-state"><span class="section-empty-text">Seção sem letra (apenas tags)</span><button class="btn btn-ghost btn-small add-lyrics-btn" data-sidx="${sIdx}">+ Adicionar letra</button></div>`}
+            ? `${(section.lines || []).map((line, lIdx) => this._renderLineEditor(sIdx, lIdx, line)).join('')}<button type="button" class="add-line-btn" data-sidx="${sIdx}">+ Adicionar linha</button>`
+            : `<div class="section-empty-state"><span class="section-empty-text">Seção sem letra (apenas tags)</span><button type="button" class="btn btn-ghost btn-small add-lyrics-btn" data-sidx="${sIdx}">+ Adicionar letra</button></div>`}
         </div>
       `;
       container.appendChild(el);
@@ -1050,11 +1059,11 @@ const App = {
 
       // Custom name
       const ci = el.querySelector('.section-custom-name');
-      if (ci) ci.addEventListener('input', (e) => { song.sections[sIdx].name = e.target.value; });
+      if (ci) ci.addEventListener('input', (e) => { song.sections[sIdx].name = e.target.value; this._queueEditorAutoSave(); });
 
       // Notes
       const ni = el.querySelector('.section-notes-input');
-      if (ni) ni.addEventListener('input', (e) => { song.sections[sIdx].notes = e.target.value; });
+      if (ni) ni.addEventListener('input', (e) => { song.sections[sIdx].notes = e.target.value; this._queueEditorAutoSave(); });
 
       // Dynamics
       el.querySelector('.dynamics-select')?.addEventListener('change', (e) => { this._pushUndo(); song.sections[sIdx].dynamics = e.target.value; });
@@ -1109,13 +1118,17 @@ const App = {
 
       if (showLines) this._bindLineEditors(el, sIdx);
     });
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, Math.min(prevScrollY, document.documentElement.scrollHeight));
+    });
   },
 
   _renderLineEditor(sIdx, lIdx, line) {
     const t = line.lyrics || '';
     return `
       <div class="line-editor" data-sidx="${sIdx}" data-lidx="${lIdx}">
-        <button class="insert-line-between-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Inserir linha aqui">+</button>
+        <button type="button" class="insert-line-between-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Inserir linha aqui">+</button>
         <div class="line-preview-container" data-sidx="${sIdx}" data-lidx="${lIdx}">
           <span class="hint">clique para adicionar tag</span>
           <div class="tags-row" data-sidx="${sIdx}" data-lidx="${lIdx}"></div>
@@ -1124,10 +1137,10 @@ const App = {
         <div class="line-input-row">
           <textarea data-sidx="${sIdx}" data-lidx="${lIdx}" rows="1" placeholder="Digite a letra...">${escapeHtml(t)}</textarea>
           <div class="line-actions">
-            <button class="icon-btn split-line-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Dividir seção aqui"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--section-color)" stroke-width="2" stroke-linecap="round"><line x1="2" y1="12" x2="22" y2="12"/><polyline points="8 8 4 12 8 16"/><polyline points="16 8 20 12 16 16"/></svg></button>
-            <button class="icon-btn move-line-up-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Mover para cima"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg></button>
-            <button class="icon-btn move-line-down-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Mover para baixo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <button class="icon-btn remove-line-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" style="color:var(--danger)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <button type="button" class="icon-btn split-line-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Dividir seção aqui"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--section-color)" stroke-width="2" stroke-linecap="round"><line x1="2" y1="12" x2="22" y2="12"/><polyline points="8 8 4 12 8 16"/><polyline points="16 8 20 12 16 16"/></svg></button>
+            <button type="button" class="icon-btn move-line-up-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Mover para cima"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <button type="button" class="icon-btn move-line-down-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" title="Mover para baixo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <button type="button" class="icon-btn remove-line-btn" data-sidx="${sIdx}" data-lidx="${lIdx}" style="color:var(--danger)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
           </div>
         </div>
       </div>
@@ -1145,6 +1158,7 @@ const App = {
         const pc = sectionEl.querySelector(`.line-preview-container[data-sidx="${sIdx}"][data-lidx="${lIdx}"]`);
         if (pc) { pc.querySelector('.lyrics-row').textContent = ta.value || ' '; this._renderLineTags(pc, sIdx, lIdx); }
         ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px';
+        this._queueEditorAutoSave();
       });
       ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px';
     });
@@ -1264,6 +1278,32 @@ const App = {
     if (idx >= 0) { this.editingSong.updatedAt = Date.now(); this.songs[idx] = this.editingSong; }
     Storage.saveSongs(this.songs);
     this.editingSongSnapshot = JSON.stringify(this.editingSong);
+  },
+
+  _queueEditorAutoSave() {
+    if (this.currentView !== 'song-editor') return;
+    clearTimeout(this._editorAutoSaveTimeout);
+    this._editorAutoSaveTimeout = setTimeout(() => {
+      if (this.currentView === 'song-editor' && this._isDirty()) this._saveSong();
+    }, 700);
+  },
+
+  _startEditorAutoSave() {
+    this._stopEditorAutoSave();
+    this._editorAutoSaveInterval = setInterval(() => {
+      if (this.currentView === 'song-editor' && this._isDirty()) this._saveSong();
+    }, 1500);
+  },
+
+  _stopEditorAutoSave() {
+    if (this._editorAutoSaveInterval) {
+      clearInterval(this._editorAutoSaveInterval);
+      this._editorAutoSaveInterval = null;
+    }
+    if (this._editorAutoSaveTimeout) {
+      clearTimeout(this._editorAutoSaveTimeout);
+      this._editorAutoSaveTimeout = null;
+    }
   },
 
   _createEmptySong() {
